@@ -1,0 +1,20 @@
+{
+  "name": "cgv-watch",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/sisu-01/cgv-watch#readme",
+  "bugs": {
+    "url": "https://github.com/sisu-01/cgv-watch/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sisu-01/cgv-watch.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
