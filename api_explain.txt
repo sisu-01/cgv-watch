@@ -1,0 +1,158 @@
+coCd: 회사 코드 (Company Code, 예: CGV 법인 식별 코드)
+siteNo: 극장 지점 번호 (Site Number, 예: 용산아이파크몰의 고유 ID)
+siteNm: 극장 지점 명칭 (Site Name)
+scnsNo: 상영관 고유 번호 (Screen Number)
+scnsNm: 상영관 명칭 (Screen Name)
+expoScnsNm: 예매 화면 노출용 상영관 명칭 (Exposed Screen Name)
+scnsEnm: 상영관 영문 명칭 (Screen English Name)
+atktPsblQty: 1회당 최대 예매 가능 티켓 매수 (Available Ticket Possible Quantity)
+scnYmd: 상영 일자 (Screening Year-Month-Day, YYYYMMDD)
+scnSseq: 상영 회차 (Screening Sequence)
+prodNo: 예매 상품 번호 (Product Number, 상영 포맷별 구분을 위한 시스템 상품 ID)
+expoProdNm: 예매 화면 노출용 상품명 (Exposed Product Name, 주로 영화 제목에 상영 포맷이 함께 표기됨)
+engProdNm: 상품 영문 명칭 (English Product Name)
+prodNm: 상품 명칭 (Product Name)
+movkndCd: 영화 포맷 종류 코드 (Movie Kind Code)
+movkndDsplNm: 화면 표시용 영화 포맷 명칭 (Movie Kind Display Name, 예: 2D, 4DX 2D)
+movkndDsplEnm: 화면 표시용 영화 포맷 영문 명칭 (Movie Kind Display English Name)
+cratgClsCd: 관람 등급 등급 코드 (Category Rating Classification Code)
+cratgClsNm: 관람 등급 명칭 (Category Rating Classification Name, 예: 15세이상관람가)
+salsTznCd: 판매 시간대 코드 (Sales Time Zone Code)
+salsTznNm: 판매 시간대 명칭 (Sales Time Zone Name, 예: 모닝, 브런치, 일반)
+scnsrtTm: 공식 상영 시작 시간 (Screening Start Time, HHMM, 티켓 표기 기준)
+scnendTm: 공식 상영 종료 시간 (Screening End Time, HHMM)
+salEndTm: 예매/판매 마감 시간 (Sales End Time, HHMM)
+sascnsGradCd: 상영관 등급 코드 (Screen Grade Code)
+sortOseq: 정렬 순서 (Sort Sequence)
+sascnsGradNm: 상영관 등급 명칭 (Screen Grade Name, 예: 일반)
+tcscnsGradCd: 티켓 상영관 종류 코드 (Ticket Screen Grade Code)
+tcscnsGradNm: 티켓 상영관 종류 명칭 (Ticket Screen Grade Name, 예: 일반, 4DX, 아이맥스 등 요금 부과 기준)
+stcnt: 상영관 총 물리 좌석 수 (Seat Count)
+cpSeatCnt: 실제 판매/수용 가능 좌석 수 (Capacity Seat Count)
+frSeatCnt: 현재 예약 가능한 잔여 좌석 수 (Free Seat Count)
+cntlYn: 판매 제어/중단 여부 (Control Yes/No)
+crntrvDsplYn: 현재 예매율/실시간 화면 표시 여부 (Current View Display Yes/No)
+hotdlYn: 핫딜(특가 프로모션) 적용 여부 (Hot Deal Yes/No)
+dblfrNo: 더블 적립 기획전 번호 (Double Free Number, 포인트 배수 적립 등의 프로모션 ID)
+dblfrRpsntYn: 더블 적립 대표 여부 (Double Free Representative Yes/No)
+iceconYn: CGV ICECON(공연/라이브/스포츠 등 얼터너티브 콘텐츠) 상영 여부 (Icecon Yes/No)
+arthsYn: 아트하우스(독립/예술영화) 상영 여부 (Art House Yes/No)
+srlsYn: 시리즈물/연속 상영 여부 (Series Yes/No)
+childnMovYn: 어린이 전용 영화 여부 (Children Movie Yes/No)
+movclsCd: 영화 분류 코드 (Movie Classification Code)
+movclsNm: 영화 분류 명칭 (Movie Classification Name, 예: 영화, 뮤지컬 등)
+speclIndctTypCd: 특별 안내/상영 타입 코드 (Special Indicator Type Code)
+movTirCd: 영화 등급/티어 구분 코드 (Movie Tier Code)
+siteGradCd: 지점 등급 코드 (Site Grade Code)
+srvltKindCd: 서비스 레이아웃/종류 코드 (Service Layout Kind Code)
+slddKindCd: 상영 일정 분류 코드 (Screening Date Detail Kind Code)
+sesnNo: 시즌 번호 (Season Number, 기획전 등의 시즌 ID)
+movNo: 영화 고유 번호 (Movie Number, 상영 포맷과 무관하게 영화 자체에 매핑된 마스터 번호)
+movNm: 영화 제목 (Movie Name)
+movEnm: 영화 영문 제목 (Movie English Name)
+mvSeatCnt: 예매 최소 선택 가능 좌석/인원 제한 수 (Movie Seat Count)
+movfNo: 영화 필름/파일 식별 번호 (Movie File Number)
+bzplcNo: 사업장 번호 (Business Place Number, 해당 지점의 세무적 사업장 코드)
+vatincYn: 부가세 포함 여부 (VAT Inclusive Yes/No)
+prdtypCd: 상품 유형 코드 (Product Type Code)
+prddtlTypCd: 상품 상세 유형 코드 (Product Detail Type Code)
+prdcmpTypCd: 상품 구성 유형 코드 (Product Composition Type Code)
+cxprdYn: 패키지/복합 상품 여부 (Cross Product Yes/No)
+scnsGradCd: 상영관 등급 코드 (Screen Grade Code)
+prcrulDivCd: 가격 책정 룰 구분 코드 (Price Rule Division Code)
+videoAddexpCd: 추가 영상 설명 코드 (Video Add Explanation Code)
+videoAddexpCdNm: 추가 영상 설명 코드 명칭 (Video Add Explanation Code Name)
+videoAddexpCont: 추가 영상 설명 내용 (Video Add Explanation Content)
+sbtdivCd: 자막 구분 코드 (Subtitle Division Code)
+sbtdivNm: 자막 구분 명칭 (Subtitle Division Name)
+physcFnm: 영화 포스터 물리 이미지 파일명 (Physical File Name)
+physcFilePathnm: 영화 포스터 물리 이미지 서버 경로 (Physical File Path Name)
+frtmpSeatCnt: 임시 잔여 좌석 수 (Free Temporary Seat Count, 결제 대기 중인 임시 홀딩 좌석을 포함한 계산식 수치)
+hotdlDtlNo: 핫딜 상세 번호 (Hot Deal Detail Number)
+rlMovStartTm: 실제 영화 시작 시간 (Real Movie Start Time, HHMM, 대개 광고 10분 후 본 영화가 시작되는 시각)
+prmddNo: 프로모션 적용 번호 (Promotion ID Number)
+prmddNm: 프로모션 명칭 (Promotion Name)
+prodImg: 상품 개별 이미지 경로 (Product Image)
+cndProdYn: 조건부 판매 상품 여부 (Conditional Product Yes/No)
+cndsaTypCd: 조건부 판매 타입 코드 (Conditional Sales Type Code)
+cndSalYnList: 조건부 판매 여부 리스트 (Conditional Sales Yes/No List)
+{
+      "coCd": "A420",
+      "siteNo": "0013",
+      "siteNm": "CGV 용산아이파크몰",
+      "scnsNo": "018",
+      "scnsNm": "IMAX관",
+      "expoScnsNm": "IMAX관",
+      "scnsEnm": "IMAX",
+      "atktPsblQty": "8",
+      "scnYmd": "20260809",
+      "scnSseq": "1",
+      "prodNo": "20054745",
+      "expoProdNm": "오디세이(IMAX LASER 2D)",
+      "engProdNm": "(IMAX LASER 2D)The Odyssey",
+      "prodNm": "오디세이(IMAX LASER 2D)",
+      "movkndCd": "48",
+      "movkndDsplNm": "IMAX LASER 2D",
+      "movkndDsplEnm": "IMAX LASER 2D",
+      "cratgClsCd": "02",
+      "cratgClsNm": "15세이상관람가",
+      "salsTznCd": "01",
+      "salsTznNm": "모닝",
+      "scnsrtTm": "0630",
+      "scnendTm": "0932",
+      "salEndTm": "0645",
+      "sascnsGradCd": "01",
+      "sortOseq": "3",
+      "sascnsGradNm": "일반",
+      "tcscnsGradCd": "03",
+      "tcscnsGradNm": "아이맥스",
+      "stcnt": "624",
+      "cpSeatCnt": "624",
+      "frSeatCnt": "128",
+      "cntlYn": "N",
+      "crntrvDsplYn": "N",
+      "hotdlYn": "N",
+      "dblfrNo": null,
+      "dblfrRpsntYn": null,
+      "iceconYn": "N",
+      "arthsYn": "N",
+      "srlsYn": "N",
+      "childnMovYn": "N",
+      "movclsCd": "01",
+      "movclsNm": "영화",
+      "speclIndctTypCd": "01",
+      "movTirCd": "01",
+      "siteGradCd": "01",
+      "srvltKindCd": "01",
+      "slddKindCd": "02",
+      "sesnNo": null,
+      "movNo": "30001323",
+      "movNm": "오디세이",
+      "movEnm": "The Odyssey",
+      "mvSeatCnt": "6",
+      "movfNo": "50002600",
+      "bzplcNo": "0013001",
+      "vatincYn": "Y",
+      "prdtypCd": "01",
+      "prddtlTypCd": "0101",
+      "prdcmpTypCd": "01",
+      "cxprdYn": "N",
+      "scnsGradCd": "0301",
+      "prcrulDivCd": "01",
+      "videoAddexpCd": null,
+      "videoAddexpCdNm": null,
+      "videoAddexpCont": null,
+      "sbtdivCd": null,
+      "sbtdivNm": null,
+      "physcFnm": "30001323_185.jpg",
+      "physcFilePathnm": "030001/30001323/30001323_185.jpg",
+      "frtmpSeatCnt": "132",
+      "hotdlDtlNo": null,
+      "rlMovStartTm": "0640",
+      "prmddNo": null,
+      "prmddNm": null,
+      "prodImg": null,
+      "cndProdYn": null,
+      "cndsaTypCd": null,
+      "cndSalYnList": null
+    },
