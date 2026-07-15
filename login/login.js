@@ -36,14 +36,14 @@ export async function login(page) {
     await page.locator('button[type="submit"]').click();
 
     // 캡챠 맞았니 틀렸니
-    const isWrong = verifyCaptcha(page);
+    const isWrong = await verifyCaptcha(page);
     if (isWrong) {
       // 모달 닫고 캡챠 다시 진행
       await page.locator('section.modal-container button.fill-main').click();
-      send_message("캡챠 실패")
+      await send_message("캡챠 실패");
       continue;
     } else {
-      send_message("로그인 성공")
+      await send_message("로그인 성공")
       break;
     }
   }
