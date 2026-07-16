@@ -68,10 +68,17 @@ async function selectSeats (page) {
       // console.log(seatIndex, TARGET_SEATS.length, !isSeatSelected);
       const currentSeatName = TARGET_SEATS[seatIndex];
       // console.log(`[시도] ${currentSeatName} 좌석 확인 중...`);
-      // 정규식을 사용해 해당 좌석 번호의 2번째(진짜) 버튼 지정
-      // 미리보기 그거때문에 두개임 ㅇㅇ
-      const seatLocator = page.getByRole('button').filter({ hasText: currentSeatName }).nth(1);
       try {
+        // 정규식을 사용해 해당 좌석 번호의 2번째(진짜) 버튼 지정
+        // 미리보기 그거때문에 두개임 ㅇㅇ
+        const seatLocator = page.getByRole('button').filter({ hasText: currentSeatName }).nth(1);
+        //숫자 세서 진짜 있는지 봐야됨. 좌석 존재하지 않는 경우도 있음
+        const count = await seatLocator.count();
+        if (count === 0) {
+          // console.log(`❌ ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
+          seatIndex++; // 다음 좌석 인덱스로
+          continue;
+        }
         // 1. 만약 이미 선택된 좌석(disabled)이라면 바로 pass
         if (await seatLocator.isDisabled()) {
           // console.log(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
@@ -101,6 +108,7 @@ async function selectSeats (page) {
       } catch (error) {
         // 로딩이 안 되었거나 unexpected 에러 발생 시 안전하게 다음으로 패스
         // console.log(`⚠️ ${currentSeatName} 탐색 중 에러 발생 (패스합니다)`);
+        // console.log(error);
         seatIndex++;
       }
     }
@@ -135,7 +143,6 @@ export async function payment (page) {
   await page.getByRole('button', { name: '앱카드' }).click();
   await page.locator('select#select1234').click();
   await page.locator(`button#${CNB}`).click();
-  return true;
   await page.getByRole('button', { name: /결제하기$/ }).click();
 
   //kb 결제창
