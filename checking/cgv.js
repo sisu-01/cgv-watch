@@ -9,9 +9,9 @@ setGlobalDispatcher(
   })
 );
 
-export async function fetchCgvSchedule(){
+export async function fetchCgvSchedule(url){
   const res = await axios.get(
-    process.env.CGV_URL,
+    url,
     {
       headers:{
         "user-agent":

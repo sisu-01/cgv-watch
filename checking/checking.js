@@ -3,6 +3,13 @@ import { fetchCgvSchedule } from "./cgv.js";
 import { findEarliestScreening } from "./utils.js"
 import 'dotenv/config'
 
+const params = new URLSearchParams({
+  coCd: process.env.CO_CD,
+  siteNo: process.env.SITE_NUMBER,
+  rtctlScopCd: process.env.RELEASE_CONTROL_SCOPE_CODE,
+  scnYmd: process.env.SCREEN_YMD
+});
+const BASE_URL = `${process.env.CGV_URL}?${params}`;
 const MOVIE_MIN_TIME = process.env.MOVIE_MIN_TIME;
 const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
 const SCREENS_NUMBER = process.env.SCREENS_NUMBER;
@@ -13,7 +20,7 @@ export async function checking() {
   await send_message("CGV 감시 시작 👀");
 
   while (true) {
-    const data = await fetchCgvSchedule();
+    const data = await fetchCgvSchedule(BASE_URL);
     const current = JSON.stringify(data.data);
 
     if (previous && previous !== current) {
