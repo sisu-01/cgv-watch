@@ -63,6 +63,8 @@ if (loginSuccess) {
   const success = await booking(page, movieData);
   if (success) {
     logger.info("🎉 예매 성공");
+    // 결제 유지 시간 10분
+    await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
   } else {
     logger.warn("❌ 예매 실패");
   }
