@@ -1134,7 +1134,5 @@ export function checking () {
     ]
   }
   const result = findEarliestScreening(tempData.data, SCREENS_NUMBER, MOVIE_MIN_TIME, MOVIE_MAX_TIME);
-  console.log(result);
-  send_message(result)
   return result;
 }

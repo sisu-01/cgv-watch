@@ -12,12 +12,6 @@ export function findEarliestScreening(dataList, SCREENS_NUMBER, MOVIE_MIN_TIME, 
 
   return dataList
     .filter(({ scnsNo, scnsrtTm, scnendTm }) => {
-        console.log(
-    scnsNo,
-    SCREENS_NUMBER,
-    scnsrtTm,
-    scnendTm
-  );
       const start = toMinutes(scnsrtTm);
       const end = toMinutes(scnendTm);
 
