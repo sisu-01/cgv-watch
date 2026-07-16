@@ -4,6 +4,7 @@ import 'dotenv/config'
 export function checking () {
   const MOVIE_MIN_TIME = process.env.MOVIE_MIN_TIME;
   const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
+  const SCREENS_NUMBER = process.env.SCREENS_NUMBER;
 
   const tempData = {
     "statusCode": 0,
@@ -1131,6 +1132,6 @@ export function checking () {
       }
     ]
   }
-  const result = findEarliestScreening(tempData.data, MOVIE_MIN_TIME, MOVIE_MAX_TIME);
+  const result = findEarliestScreening(tempData.data, SCREENS_NUMBER, MOVIE_MIN_TIME, MOVIE_MAX_TIME);
   return result;
 }

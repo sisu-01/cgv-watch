@@ -5,16 +5,16 @@ function toMinutes(hhmm) {
   return hour * 60 + minute;
 }
 
-export function findEarliestScreening(dataList, minTime, maxTime) {
-  const min = toMinutes(minTime);
-  const max = toMinutes(maxTime);
+export function findEarliestScreening(dataList, SCREENS_NUMBER, MOVIE_MIN_TIME, MOVIE_MAX_TIME) {
+  const min = toMinutes(MOVIE_MIN_TIME);
+  const max = toMinutes(MOVIE_MAX_TIME);
 
   return dataList
     .filter(({ scnsrtTm, scnendTm }) => {
       const start = toMinutes(scnsrtTm);
       const end = toMinutes(scnendTm);
 
-      return start >= min && end <= max;
+      return (scnsNo === SCREENS_NUMBER && start >= min && end <= max);
     })
     .sort((a, b) => toMinutes(a.scnsrtTm) - toMinutes(b.scnsrtTm))[0] ?? null;
 }
