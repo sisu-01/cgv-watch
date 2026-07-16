@@ -10,32 +10,38 @@ const params = new URLSearchParams({
   scnYmd: process.env.SCREEN_YMD
 });
 const BASE_URL = `${process.env.CGV_URL}?${params}`;
+const MOVIE_NUMBER   = process.env.MOVIE_NUMBER;
+const SCREENS_NUMBER = process.env.SCREENS_NUMBER;
 const MOVIE_MIN_TIME = process.env.MOVIE_MIN_TIME;
 const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
-const SCREENS_NUMBER = process.env.SCREENS_NUMBER;
 
-let previous = null;
+let previous = '[]';
 
 export async function checking() {
   await send_message("CGV 감시 시작 👀");
 
   while (true) {
-    const data = await fetchCgvSchedule(BASE_URL);
-    const current = JSON.stringify(data.data);
-
-    if (previous && previous !== current) {
-      const result = findEarliestScreening(
-        data.data,
-        SCREENS_NUMBER,
-        MOVIE_MIN_TIME,
-        MOVIE_MAX_TIME
-      );
-      if (result) {
-        return result;
+    try {
+      const data = await fetchCgvSchedule(BASE_URL);
+      const current = JSON.stringify(data.data);
+  
+      if (previous && previous !== current) {
+        const result = findEarliestScreening(
+          data.data,
+          MOVIE_NUMBER,
+          SCREENS_NUMBER,
+          MOVIE_MIN_TIME,
+          MOVIE_MAX_TIME
+        );
+        if (result) {
+          return result;
+        }
+        send_message("상영관은 열렸지만 선택한 것은 없음.")
       }
-      send_message("상영관은 열렸지만 선택한 것은 없음.")
+      previous = current;
+    } catch (error) {
+      send_message(error);
     }
-    previous = current;
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
 }
