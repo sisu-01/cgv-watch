@@ -9,7 +9,7 @@ const context = await browser.newContext({
   viewport: { width: 1280, height: 900 }
 });
 
-const isAutoLogin = true;
+const isAutoLogin = false;
 if (isAutoLogin) {
   await context.addCookies([
     {
