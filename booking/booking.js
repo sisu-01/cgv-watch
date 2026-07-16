@@ -25,7 +25,7 @@ export async function booking(page, data) {
     }
     const textCode = await payment(page);
     await send_message(textCode);
-    return true;
+    return textCode;
   } catch (error) {
     await send_message('booking.js\n', error);
     logger.error(error)

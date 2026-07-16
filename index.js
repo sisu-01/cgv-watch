@@ -60,11 +60,17 @@ if (!isAutoLogin) {
 }
 if (loginSuccess) {
   const movieData = await checking();
-  const success = await booking(page, movieData);
-  if (success) {
-    logger.info("🎉 예매 성공");
+  const textCode = await booking(page, movieData);
+  if (textCode) {
+    logger.info(`🎉 예매 성공 ${textCode}`);
+
+    const interval = setInterval(async () => {
+      await send_message(`🎉 예매 성공\n결제 코드: ${textCode}`);
+    }, 10 * 1000);
+
     // 결제 유지 시간 10분
     await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
+    clearInterval(interval);
   } else {
     logger.warn("❌ 예매 실패");
   }
