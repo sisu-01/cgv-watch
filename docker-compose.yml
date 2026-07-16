@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  session-check:
+    build: .
+    container_name: cgv-watch
+    restart: on-failure
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./logs:/app/logs
