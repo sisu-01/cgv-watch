@@ -1,3 +1,5 @@
+// checking/checking.js
+
 import { send_message } from "../telegram/telegram.js";
 import { fetchCgvSchedule } from "./cgv.js";
 import { findEarliestScreening } from "./utils.js"
@@ -17,10 +19,15 @@ const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
 
 let previous = null;
 
+
 export async function checking() {
   await send_message("CGV 감시 시작 👀");
+  let lastHeartbeatDate = "";
 
   while (true) {
+    const now = new Date();
+    const today = now.toISOString().slice(0, 10);
+
     try {
       const data = await fetchCgvSchedule(BASE_URL);
       const current = JSON.stringify(data.data);
@@ -39,6 +46,16 @@ export async function checking() {
         send_message("상영관은 열렸지만 선택한 것은 없음.")
       }
       previous = current;
+
+      //12시 알림
+      if (
+        now.getHours() === 19 &&
+        now.getMinutes() === 2 &&
+        today !== lastHeartbeatDate
+      ) {
+        await send_message("💚 감시 정상 동작 중");
+        lastHeartbeatDate = today;
+      }
     } catch (error) {
       send_message(error);
     }
