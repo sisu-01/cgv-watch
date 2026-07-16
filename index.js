@@ -56,6 +56,7 @@ if (!isAutoLogin) {
 }
 const movieData = await checking();
 const success = await booking(page, movieData);
+await browser.close();
 if (success) {
   console.log("샤샷");
 } else {
