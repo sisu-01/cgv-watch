@@ -33,7 +33,7 @@ const page = await context.newPage();
 if (!isAutoLogin) {
   await login(page);
 }
-const movieData = checking();
+const movieData = await checking();
 const success = await booking(page, movieData);
 if (success) {
   console.log("샤샷");
