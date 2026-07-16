@@ -34,7 +34,12 @@ if (!isAutoLogin) {
   await login(page);
 }
 const movieData = checking();
-await booking(page, movieData);
+const success = await booking(page, movieData);
+if (success) {
+  console.log("샤샷");
+} else {
+  console.log("에라이");
+}
 
 // const b = await booking(a);
 // console.log(b);
