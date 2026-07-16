@@ -1,3 +1,4 @@
+import { send_message } from "../telegram/telegram.js";
 import { findEarliestScreening } from "./utils.js"
 import 'dotenv/config'
 
@@ -1133,5 +1134,7 @@ export function checking () {
     ]
   }
   const result = findEarliestScreening(tempData.data, SCREENS_NUMBER, MOVIE_MIN_TIME, MOVIE_MAX_TIME);
+  console.log(result);
+  send_message(result)
   return result;
 }
