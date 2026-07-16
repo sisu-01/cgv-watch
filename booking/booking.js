@@ -4,6 +4,7 @@ import 'dotenv/config'
 import { printSpiralSeats } from './utils.js';
 import { isAlreadySelectedModal } from './utils.js';
 import { send_message } from '../telegram/telegram.js';
+import logger from "../logger.js";
 
 const GROUP = process.env.GROUP;
 const COUNT = process.env.COUNT;
@@ -13,10 +14,29 @@ const START_COL = Number(process.env.START_COL);
 const END_COL = Number(process.env.END_COL);
 const CNB = process.env.CARD;
 
+export async function booking(page, data) {
+  try {
+    await goToBookingPage(page, data);
+    const isSuccess = await selectSeats(page);
+    if (!isSuccess) {
+      await send_message("😭 실패했어요 ㅠㅠㅠ");
+      logger.info("실패");
+      return false;
+    }
+    const textCode = await payment(page);
+    await send_message(textCode);
+    return true;
+  } catch (error) {
+    await send_message('booking.js\n', error);
+    logger.error(error)
+    return false;
+  }
+}
+
 async function goToBookingPage(page, data) {
   const baseUrl = 'https://cgv.co.kr/cnm/selectVisitorCnt';
   // "coCd": "A420",
-    // "movNo": "30001323", 아니;; 이것들 있으면 결제 안됨 멍미;
+  // "movNo": "30001323", 아니;; 이것들 있으면 결제 안됨 멍미;
   const params = new URLSearchParams(
     Object.fromEntries(
       Object.entries(data).filter(
@@ -90,7 +110,7 @@ async function selectSeats (page) {
           // console.log(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
           seatIndex++;
           continue;
-        }  
+        }
         // 2. 선택 가능한 좌석이라면 클릭 시도!
         // console.log(`✅ ${currentSeatName} 좌석 선택 성공!`);
         await seatLocator.click();
@@ -150,21 +170,4 @@ export async function payment (page) {
   const textCode = await page.locator('#tcode').innerText();
   // console.log("결제코드:", textCode);
   return textCode;
-}
-
-export async function booking(page, data) {
-  try {
-    await goToBookingPage(page, data);
-    const isSuccess = await selectSeats(page);
-    if (!isSuccess) {
-      send_message("😭 실패했어요 ㅠㅠㅠ");
-      return false;
-    }
-    const textCode = await payment(page);
-    await send_message(textCode);
-    return true;
-  } catch (error) {
-    await send_message(error);
-    return false;
-  }
 }

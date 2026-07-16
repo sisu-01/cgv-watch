@@ -4,6 +4,7 @@ import { send_message } from "../telegram/telegram.js";
 import { fetchCgvSchedule } from "./cgv.js";
 import { findEarliestScreening } from "./utils.js"
 import 'dotenv/config'
+import logger from "../logger.js";
 
 const params = new URLSearchParams({
   coCd: process.env.CO_CD,
@@ -19,7 +20,6 @@ const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
 
 let previous = null;
 
-
 export async function checking() {
   await send_message("CGV 감시 시작 👀");
   let lastHeartbeatDate = "";
@@ -30,6 +30,7 @@ export async function checking() {
 
     try {
       const data = await fetchCgvSchedule(BASE_URL);
+      if (data === null) continue;
       const current = JSON.stringify(data.data);
   
       if (previous && previous !== current) {
@@ -43,7 +44,8 @@ export async function checking() {
         if (result) {
           return result;
         }
-        send_message("상영관은 열렸지만 선택한 것은 없음.")
+        send_message("상영관은 열렸지만 선택한 것은 없음.");
+        logger.info("상영관은 열렸지만 선택한 것은 없음.");
       }
       previous = current;
 
@@ -53,11 +55,13 @@ export async function checking() {
         now.getMinutes() === 2 &&
         today !== lastHeartbeatDate
       ) {
-        await send_message("💚 감시 정상 동작 중");
+        send_message("💚 감시 정상 동작 중");
+        logger.info("감시 정상 동작 중");
         lastHeartbeatDate = today;
       }
     } catch (error) {
-      send_message(error);
+      send_message('checking.js\n', error);
+      logger.error(error);
     }
     await new Promise(resolve => setTimeout(resolve, 5000));
   }

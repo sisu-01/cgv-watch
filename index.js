@@ -2,6 +2,9 @@ import { chromium } from "playwright";
 import { checking } from "./checking/checking.js";
 import { booking } from "./booking/booking.js";
 import { login } from "./login/login.js";
+import logger from "./logger.js";
+
+logger.info("시작!");
 
 // 종료 이벤트 등록
 process.on("SIGINT", async () => {
@@ -51,17 +54,20 @@ if (isAutoLogin) {
 const page = await context.newPage();
 
 // 로그인
+let loginSuccess = true;
 if (!isAutoLogin) {
-  await login(page);
+  loginSuccess = await login(page);
 }
-const movieData = await checking();
-const success = await booking(page, movieData);
+if (loginSuccess) {
+  const movieData = await checking();
+  const success = await booking(page, movieData);
+  if (success) {
+    logger.info("🎉 예매 성공");
+  } else {
+    logger.warn("❌ 예매 실패");
+  }
+}
 await browser.close();
-if (success) {
-  console.log("샤샷");
-} else {
-  console.log("에라이");
-}
 
 // const b = await booking(a);
 // console.log(b);
