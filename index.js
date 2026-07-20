@@ -8,10 +8,10 @@ import { update_history } from "./utils.js";
 logger.info("시작!");
 
 // 종료 이벤트 등록
-process.on("SIGINT", async () => {
-  await send_message("🔴 프로그램 종료 (Ctrl+C)");
-  process.exit(0);
-});
+// process.on("SIGINT", async () => {
+//   await send_message("🔴 프로그램 종료 (Ctrl+C)");
+//   process.exit(0);
+// });
 
 process.on("SIGTERM", async () => {
   await send_message("🔴 프로그램 종료 (SIGTERM)");
