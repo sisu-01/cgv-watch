@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import fs from 'fs';
 import 'dotenv/config'
-import { printSpiralSeats } from './utils.js';
+import { printSpiralSeats, waitAndChangeModalTransform } from './utils.js';
 import { isAlreadySelectedModal } from './utils.js';
 import { send_message } from '../telegram/telegram.js';
 import logger from "../logger.js";
@@ -81,9 +81,11 @@ async function selectSeats (page) {
     await targetButton.click();
     await page.locator('button', { hasText: /^선택$/ }).click();
 
-    //좌석 선택
+    // 좌석 선택
     let seatIndex = 0;
     let isSeatSelected = false;
+    // 모든 좌석 클릭 가능하게 화면 줄이기
+    await waitAndChangeModalTransform(page);
     while (seatIndex < TARGET_SEATS.length && !isSeatSelected) {
       // console.log(seatIndex, TARGET_SEATS.length, !isSeatSelected);
       const currentSeatName = TARGET_SEATS[seatIndex];
@@ -129,12 +131,12 @@ async function selectSeats (page) {
         // 로딩이 안 되었거나 unexpected 에러 발생 시 안전하게 다음으로 패스
         // console.log(`⚠️ ${currentSeatName} 탐색 중 에러 발생 (패스합니다)`);
         // console.log(error);
+        logger.error(error);
         seatIndex++;
       }
     }
     if (!isSeatSelected) {
       // console.log("😭 준비한 모든 좌석이 매진되었습니다.");
-
       return false;
     }
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();

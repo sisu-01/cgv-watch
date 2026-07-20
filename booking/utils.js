@@ -1,3 +1,24 @@
+export async function waitAndChangeModalTransform(page) {
+  let prev = "";
+  await page.waitForFunction(() => {
+    const el = document.querySelector(".react-transform-component");
+    return el?.style.transform ?? "";
+  });
+  while (true) {
+    const current = await page.locator(".react-transform-component")
+      .evaluate(el => el.style.transform);
+    if (current === prev) {
+      break; // 더 이상 transform이 안 바뀜
+    }
+    prev = current;
+    await page.waitForTimeout(100);
+  }
+  await page.evaluate(() => {
+    document.querySelector(".react-transform-component").style.transform =
+      "translate(0px, 0px) scale(0.3)";
+  });
+}
+
 export function printSpiralSeats(startRow, endRow, startCol, endCol) {
   const rows = [];
 
