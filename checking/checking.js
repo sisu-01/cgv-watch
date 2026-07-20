@@ -18,10 +18,10 @@ const SCREENS_NUMBER = process.env.SCREENS_NUMBER;
 const MOVIE_MIN_TIME = process.env.MOVIE_MIN_TIME;
 const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
 
-let previous = null;
 
-export async function checking() {
+export async function checking(isDev = false) {
   await send_message("CGV 감시 시작 👀");
+  let previous = isDev ? "[]" : null;
   let lastHeartbeatDate = "";
 
   while (true) {

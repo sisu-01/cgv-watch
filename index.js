@@ -39,8 +39,9 @@ const context = await browser.newContext({
   viewport: { width: 1280, height: 900 }
 });
 
-const isAutoLogin = process.argv.includes("--login");
-if (isAutoLogin) {
+const isDev = process.argv.includes("--dev");
+
+if (isDev) {
   await context.addCookies([
     {
       name: 'accessToken',
@@ -61,11 +62,11 @@ const page = await context.newPage();
 
 // 로그인
 let loginSuccess = true;
-if (!isAutoLogin) {
+if (!isDev) {
   loginSuccess = await login(page);
 }
 if (loginSuccess) {
-  const movieData = await checking();
+  const movieData = await checking(isDev);
   const textCode = await booking(page, movieData);
   if (textCode) {
     logger.info(`🎉 예매 성공 ${textCode}`);
