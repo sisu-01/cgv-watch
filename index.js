@@ -3,6 +3,7 @@ import { checking } from "./checking/checking.js";
 import { booking } from "./booking/booking.js";
 import { login } from "./login/login.js";
 import logger from "./logger.js";
+import { update_history } from "./utils.js";
 
 logger.info("시작!");
 
@@ -27,6 +28,11 @@ process.on("unhandledRejection", async (reason) => {
   process.exit(1);
 });
 
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const MOVIE_TITLE = process.env.MOVIE_TITLE;
+const SCREEN_YMD = process.env.SCREEN_YMD;
+
 // 브라우저 생성
 const browser = await chromium.launch({ headless: false });
 const context = await browser.newContext({
@@ -38,13 +44,13 @@ if (isAutoLogin) {
   await context.addCookies([
     {
       name: 'accessToken',
-      value: process.env.ACCESS_TOKEN,
+      value: ACCESS_TOKEN,
       domain: 'cgv.co.kr',
       path: '/',
     },
     {
       name: 'refresh_token',
-      value: process.env.REFRESH_TOKEN,
+      value: REFRESH_TOKEN,
       domain: '.cgv.co.kr',
       path: '/',
     }
@@ -63,11 +69,12 @@ if (loginSuccess) {
   const textCode = await booking(page, movieData);
   if (textCode) {
     logger.info(`🎉 예매 성공 ${textCode}`);
-
+    update_history(MOVIE_TITLE, SCREEN_YMD)
+    
     const interval = setInterval(async () => {
       await send_message(`🎉 예매 성공\n결제 코드: ${textCode}`);
     }, 10 * 1000);
-
+    
     // 결제 유지 시간 10분
     await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
     clearInterval(interval);
