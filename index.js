@@ -28,6 +28,8 @@ process.on("unhandledRejection", async (reason) => {
   process.exit(1);
 });
 
+// isDev: 개발 할 때 미리 설정해놓은 쿠키 로그인 및 checking 무조건 걸림
+const isDev = process.argv.includes("--dev");
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const MOVIE_TITLE = process.env.MOVIE_TITLE;
@@ -39,8 +41,7 @@ const context = await browser.newContext({
   viewport: { width: 1280, height: 900 }
 });
 
-const isDev = process.argv.includes("--dev");
-
+// --dev 면 미리 설정한 쿠키로 로그인
 if (isDev) {
   await context.addCookies([
     {
@@ -65,20 +66,27 @@ let loginSuccess = true;
 if (!isDev) {
   loginSuccess = await login(page);
 }
+
 if (loginSuccess) {
+  // 영화 오픈 체크
   const movieData = await checking(isDev);
-  const textCode = await booking(page, movieData);
-  if (textCode) {
-    logger.info(`🎉 예매 성공 ${textCode}`);
+
+  // 영화 예매 및 결제 페이지까지 이동
+  const paymentCode = await booking(page, movieData);
+
+  if (paymentCode) {
+    logger.info(`🎉 예매 성공 ${paymentCode}`);
+
+    // 오픈 언제 열렸는지 기록
     update_history(MOVIE_TITLE, SCREEN_YMD)
     
+    // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
     const interval = setInterval(async () => {
-      await send_message(`🎉 예매 성공\n결제 코드: ${textCode}`);
+      await send_message(`🎉 예매 성공\n결제 코드: ${paymentCode}`);
     }, 10 * 1000);
-    
-    // 결제 유지 시간 10분
     await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
     clearInterval(interval);
+
   } else {
     logger.warn("❌ 예매 실패");
   }
