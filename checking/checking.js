@@ -51,11 +51,11 @@ export async function checking() {
 
       //12시 알림
       if (
-        now.getHours() === 19 &&
-        now.getMinutes() === 2 &&
+        now.getHours() === 12 &&
+        now.getMinutes() === 0 &&
         today !== lastHeartbeatDate
       ) {
-        send_message("💚 감시 정상 동작 중");
+        send_message("감시 정상 동작 중");
         logger.info("감시 정상 동작 중");
         lastHeartbeatDate = today;
       }
