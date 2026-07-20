@@ -30,7 +30,9 @@ export async function checking() {
 
     try {
       const data = await fetchCgvSchedule(BASE_URL);
-      if (data === null) continue;
+      if (!data || !Array.isArray(data.data)) {
+        continue;
+      }
       const current = JSON.stringify(data.data);
   
       if (previous && previous !== current) {
@@ -62,8 +64,9 @@ export async function checking() {
     } catch (error) {
       send_message('checking.js\n', error);
       logger.error(error);
+    } finally {
+      await new Promise(resolve => setTimeout(resolve, 5000));
     }
-    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 }
 
