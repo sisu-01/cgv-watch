@@ -12,6 +12,10 @@ const params = new URLSearchParams({
   rtctlScopCd: process.env.RELEASE_CONTROL_SCOPE_CODE,
   scnYmd: process.env.SCREEN_YMD
 });
+const COUNT          = process.env.COUNT;
+const MOVIE_TITLE    = process.env.MOVIE_TITLE;
+const SCREEN_YMD     = process.env.SCREEN_YMD;
+
 const BASE_URL = `${process.env.CGV_URL}?${params}`;
 const MOVIE_NUMBER   = process.env.MOVIE_NUMBER;
 const SCREENS_NUMBER = process.env.SCREENS_NUMBER;
@@ -20,7 +24,7 @@ const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
 
 
 export async function checking(isDev = false) {
-  await send_message("CGV 감시 시작 👀");
+  await send_message(`CGV 감시 시작 👀\n\n인원: ${COUNT}\n제목: ${MOVIE_TITLE}\n상영일: ${SCREEN_YMD}\n상영 시각: ${MOVIE_MIN_TIME}~${MOVIE_MAX_TIME}`);
   let previous = isDev ? "[]" : null;
   let lastHeartbeatDate = "";
 
