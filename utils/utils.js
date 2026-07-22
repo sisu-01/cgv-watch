@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 
 export async function update_history(MOVIE_TITLE, SCREEN_YMD) {
-  const data = JSON.parse(await fs.readFile("./history.json", "utf8"));
+  const data = JSON.parse(await fs.readFile("./static/history.json", "utf8"));
 
   const key = `${MOVIE_TITLE}|${SCREEN_YMD}`;
   const value = get_diff_days(SCREEN_YMD);
@@ -12,7 +12,7 @@ export async function update_history(MOVIE_TITLE, SCREEN_YMD) {
   };
   
   await fs.writeFile(
-    "./history.json",
+    "./static/history.json",
     JSON.stringify(data, null, 2),
     "utf8"
   );

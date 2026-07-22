@@ -4,7 +4,7 @@ import { send_message } from "../telegram/telegram.js";
 import { fetchCgvSchedule } from "./cgv.js";
 import { findEarliestScreening } from "./utils.js"
 import 'dotenv/config'
-import logger from "../logger.js";
+import logger from "../utils/logger.js"
 
 const params = new URLSearchParams({
   coCd: process.env.CO_CD,

@@ -2,8 +2,8 @@ import { chromium } from "playwright";
 import { checking } from "./checking/checking.js";
 import { booking } from "./booking/booking.js";
 import { login } from "./login/login.js";
-import logger from "./logger.js";
-import { update_history } from "./utils.js";
+import logger from "./utils/logger.js";
+import { update_history } from "./utils/utils.js";
 
 logger.info("시작!");
 

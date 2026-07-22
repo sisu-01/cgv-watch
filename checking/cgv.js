@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Agent, setGlobalDispatcher } from "undici";
-import logger from "../logger.js";
+import logger from "../utils/logger.js"
 
 setGlobalDispatcher(
   new Agent({

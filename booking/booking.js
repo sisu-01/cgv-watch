@@ -4,7 +4,7 @@ import 'dotenv/config'
 import { printSpiralSeats, waitAndChangeModalTransform } from './utils.js';
 import { isAlreadySelectedModal } from './utils.js';
 import { send_message } from '../telegram/telegram.js';
-import logger from "../logger.js";
+import logger from "../utils/logger.js"
 
 const GROUP = process.env.GROUP;
 const COUNT = process.env.COUNT;

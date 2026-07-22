@@ -1,7 +1,7 @@
 import { openAsBlob } from "node:fs";
 import { initOffset, send_message, send_photo, waitCaptchaReply } from "../telegram/telegram.js";
 import "dotenv/config";
-import logger from "../logger.js";
+import logger from "../utils/logger.js"
 
 let offset = initOffset();
 
