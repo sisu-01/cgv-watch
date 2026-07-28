@@ -99,7 +99,7 @@ async function selectSeats (page) {
       try {
         // 정규식을 사용해 해당 좌석 번호의 2번째(진짜) 버튼 지정
         // 미리보기 그거때문에 두개임 ㅇㅇ
-        const seatLocator = page.getByRole('button').filter({ hasText: currentSeatName }).nth(1);
+        const seatLocator = page.locator("button", {hasText: new RegExp(`^${currentSeatName}$`)}).nth(1);
         //숫자 세서 진짜 있는지 봐야됨. 좌석 존재하지 않는 경우도 있음
         const count = await seatLocator.count();
         if (count === 0) {
@@ -108,15 +108,21 @@ async function selectSeats (page) {
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
+
+        // 있는거 확인 했으면 disabled, title 가져오기
+        const info = await seatLocator.evaluate(el => ({
+            disabled: el.disabled,
+            title: el.title
+        }));
+        
         // 1. 만약 이미 선택된 좌석(disabled)이라면 바로 pass
-        if (await seatLocator.isDisabled()) {
+        if (info.disabled) {
           // console.log(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
           logger.info(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`)
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
-        const title = await seatLocator.getAttribute('title');
-        if (title === '선택됨') {
+        if (info.title === '선택됨') {
           // console.log(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
           logger.info(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
           seatIndex++;
