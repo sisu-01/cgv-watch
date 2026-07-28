@@ -63,8 +63,10 @@ async function goToBookingPage(page, data) {
 
 async function selectSeats (page) {
   //좌석 범위 목록들 정가운데서 시계방향으로 회오리~
+
   const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
   // console.log(TARGET_SEATS);
+  logger.info(`START_ROW: ${START_ROW}, END_ROW: ${END_ROW} START_COL: ${START_COL} END_COL: ${END_COL}`);
   logger.info(TARGET_SEATS);
   
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
