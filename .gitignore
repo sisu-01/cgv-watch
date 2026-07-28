@@ -1,6 +1,9 @@
 # 캡챠이미지
 *.png
 
+# 디버그
+debug
+
 # Logs
 logs
 *.log

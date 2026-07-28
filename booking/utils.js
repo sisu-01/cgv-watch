@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+
 export async function waitAndChangeModalTransform(page) {
   let prev = "";
   await page.waitForFunction(() => {
@@ -98,4 +100,32 @@ export async function isAlreadySelectedModal(page) {
     await page.waitForTimeout(100);
   }
   return false;
+}
+
+export async function screenCaptureAndSaveHtml(page) {
+  try {
+    await fs.mkdir("./debug", { recursive: true });
+
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[:.]/g, "-");
+
+    // 현재 화면 캡처
+    await page.screenshot({
+      path: `./debug/${timestamp}.png`,
+      fullPage: true,
+    });
+
+    // 현재 HTML 저장
+    const html = await page.content();
+    await fs.writeFile(
+      `./debug/${timestamp}.html`,
+      html,
+      "utf8"
+    );
+
+    console.log(`디버그 파일 저장 완료 (${timestamp})`);
+  } catch (err) {
+    console.error("디버그 파일 저장 실패:", err);
+  }
 }

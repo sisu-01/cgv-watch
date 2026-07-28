@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';
 import fs from 'fs';
 import 'dotenv/config'
-import { printSpiralSeats, waitAndChangeModalTransform } from './utils.js';
+import { printSpiralSeats, screenCaptureAndSaveHtml, waitAndChangeModalTransform } from './utils.js';
 import { isAlreadySelectedModal } from './utils.js';
 import { send_message } from '../telegram/telegram.js';
 import logger from "../utils/logger.js"
@@ -156,6 +156,7 @@ async function selectSeats (page) {
     if (!isSeatSelected) {
       // console.log("😭 준비한 모든 좌석이 매진되었습니다.");
       logger.info("😭 준비한 모든 좌석이 매진되었습니다.");
+      await screenCaptureAndSaveHtml(page);
       return false;
     }
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();
