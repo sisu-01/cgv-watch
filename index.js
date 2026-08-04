@@ -82,7 +82,7 @@ if (loginSuccess) {
     
     // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
     const interval = setInterval(async () => {
-      await send_message(`🎉 예매 성공\n결제 코드: ${paymentCode}`);
+      await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n결제 코드: ${paymentCode}`);
     }, 10 * 1000);
     await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
     clearInterval(interval);
