@@ -7,4 +7,4 @@ if [ -z "$SCREEN_YMD" ]; then
   exit 1
 fi
 
-DAY=$DAY docker compose -p cgv-${SCREEN_YMD} up -d
+SCREEN_YMD=$SCREEN_YMD docker compose -p cgv-${SCREEN_YMD} up -d
