@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
 
     environment:
-      - TZ=Asia/Seoul
-      - SCREEN_YMD: ${SCREEN_YMD}
+      TZ: Asia/Seoul
+      SCREEN_YMD: ${SCREEN_YMD}
 
     env_file:
       - .env
