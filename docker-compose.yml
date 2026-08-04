@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   app:
+    image: cgv-watch-app
     build: .
     restart: unless-stopped
 
