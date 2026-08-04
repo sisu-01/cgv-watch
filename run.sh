@@ -1,10 +1,10 @@
 #!/bin/bash
 
-DAY=$1
+SCREEN_YMD=$1
 
-if [ -z "$DAY" ]; then
-  echo "사용법: ./run.sh 0727"
+if [ -z "$SCREEN_YMD" ]; then
+  echo "사용법: ./run.sh 20260727"
   exit 1
 fi
 
-DAY=$DAY docker compose -p cgv-${DAY} up -d
+DAY=$DAY docker compose -p cgv-${SCREEN_YMD} up -d

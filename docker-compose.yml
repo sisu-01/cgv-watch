@@ -7,9 +7,10 @@ services:
 
     environment:
       - TZ=Asia/Seoul
+      - SCREEN_YMD: ${SCREEN_YMD}
 
     env_file:
-      - ${DAY}.env
+      - .env
 
     volumes:
-      - ./logs/${DAY}:/app/logs
+      - ./logs/${SCREEN_YMD}:/app/logs
