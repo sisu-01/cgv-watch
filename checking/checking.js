@@ -61,8 +61,8 @@ export async function checking(isDev = false) {
         now.getMinutes() === 0 &&
         today !== lastHeartbeatDate
       ) {
-        send_message("감시 정상 동작 중");
-        logger.info("감시 정상 동작 중");
+        send_message(`${MOVIE_TITLE} ${SCREEN_YMD} 감시 정상 동작 중`);
+        logger.info(`${MOVIE_TITLE} ${SCREEN_YMD} 감시 정상 동작 중`);
         lastHeartbeatDate = today;
       }
     } catch (error) {
