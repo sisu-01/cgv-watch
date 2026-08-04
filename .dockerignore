@@ -1,0 +1,8 @@
+.env
+*.env
+run.sh
+.git
+.gitignore
+docker-compose.yml
+logs
+debug
