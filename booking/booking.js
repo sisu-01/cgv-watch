@@ -46,7 +46,7 @@ async function goToBookingPage(page, data) {
   );
 
   // origin cgv로 하면서 로딩 빠르게
-  await page.goto("https://cgv.co.kr/favicon.ico");
+  await page.goto("https://cgv.co.kr/robots.txt");
   
   // session storage 설정
   const session = {
