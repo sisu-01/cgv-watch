@@ -56,7 +56,7 @@ async function goToBookingPage(page, data) {
   }, session);
 
   await page.goto(`${baseUrl}?${params.toString()}`);
-  logger.info("예매 페이지 이동");
+  // logger.info("예매 페이지 이동");
 }
 
 async function selectSeats (page) {
@@ -64,8 +64,8 @@ async function selectSeats (page) {
 
   const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
   // console.log(TARGET_SEATS);
-  logger.info(`START_ROW: ${START_ROW}, END_ROW: ${END_ROW} START_COL: ${START_COL} END_COL: ${END_COL}`);
-  logger.info(TARGET_SEATS);
+  // logger.info(`START_ROW: ${START_ROW}, END_ROW: ${END_ROW} START_COL: ${START_COL} END_COL: ${END_COL}`);
+  // logger.info(TARGET_SEATS);
   
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
   // 최대 도전 회수
@@ -74,7 +74,7 @@ async function selectSeats (page) {
   while (retryCount < 20 && !isSuccess) {
     retryCount++;
     // console.log("loop", retryCount);
-    logger.info(`loop ${retryCount}`);
+    // logger.info(`loop ${retryCount}`);
 
     // 인원 선택
     const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
@@ -162,7 +162,7 @@ async function selectSeats (page) {
     if (isAlready) {
       // console.log('⚠️ 이선좌 발생');
       // console.log(`좌석 재시도 ${retryCount}/20`);
-      logger.info(`이선좌 발생 좌석 재시도 ${retryCount}/20`);
+      logger.info(`이선좌 ${retryCount}/20`);
       await page.getByRole('button', { name: '확인' }).click();
       continue;
     } else {
@@ -170,7 +170,6 @@ async function selectSeats (page) {
     }
   }
   // console.log("이선좌 컷~!");
-  logger.info('이선좌 통과');
   await page.getByRole('button', { name: /결제하기$/ }).click();
   await page.getByRole('button', { name: /결제하기$/ }).nth(1).click();
   return true;
