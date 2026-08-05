@@ -37,14 +37,17 @@ export async function checking(isDev = false) {
   while (true) {
     const now = new Date();
     const today = now.toISOString().slice(0, 10);
-
+    
     try {
       const data = await fetchCgvSchedule(BASE_URL);
       if (!data || !Array.isArray(data.data)) {
         continue;
       }
       const current = JSON.stringify(data.data);
-  
+      if (isDev) {
+        logger.info(current);
+      }
+      
       if (previous && previous !== current) {
         const result = findEarliestScreening(
           data.data,
