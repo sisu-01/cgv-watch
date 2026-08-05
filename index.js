@@ -89,15 +89,11 @@ if (loginSuccess) {
   // origin cgv로 하면서 로딩 빠르게
   await page.goto("https://cgv.co.kr/robots.txt");
   
-  const start = performance.now();
   // 영화 오픈 체크
   const movieData = await checking(isDev);
 
   // 영화 예매 및 결제 페이지까지 이동
   const paymentCode = await booking(page, movieData);
-  const end = performance.now();
-  logger.info(`실행 시간: ${(end - start).toFixed(2)}ms`)
-  await send_message(`실행 시간: ${(end - start).toFixed(2)}ms`);
 
   if (paymentCode) {
     logger.info(`🎉 예매 성공 ${paymentCode}`);
