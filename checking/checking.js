@@ -62,8 +62,8 @@ export async function checking(isDev = false) {
           logger.info('발견');
           return result;
         }
-        send_message("상영관은 열렸지만 선택한 것은 없음.");
-        logger.info("상영관은 열렸지만 선택한 것은 없음.");
+        // send_message("상영관은 열렸지만 선택한 것은 없음.");
+        // logger.info("상영관은 열렸지만 선택한 것은 없음.");
       }
       previous = current;
 
