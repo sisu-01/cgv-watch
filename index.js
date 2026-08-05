@@ -4,8 +4,13 @@ import { booking } from "./booking/booking.js";
 import { login } from "./login/login.js";
 import logger from "./utils/logger.js";
 import { update_history } from "./utils/utils.js";
+import { performance } from "node:perf_hooks";
+import { send_message } from "./telegram/telegram.js";
+
+// 로그인 성공 -> 소용돌이 출력까지 너무 느려, loop1 다음까지 느려
 
 logger.info("시작!");
+const start = performance.now();
 
 // 종료 이벤트 등록
 // process.on("SIGINT", async () => {
@@ -73,6 +78,9 @@ if (loginSuccess) {
 
   // 영화 예매 및 결제 페이지까지 이동
   const paymentCode = await booking(page, movieData);
+  const end = performance.now();
+  logger.info(`실행 시간: ${(end - start).toFixed(2)}ms`)
+  await send_message(`실행 시간: ${(end - start).toFixed(2)}ms`);
 
   if (paymentCode) {
     logger.info(`🎉 예매 성공 ${paymentCode}`);
