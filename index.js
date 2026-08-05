@@ -78,19 +78,6 @@ if (isDev) {
 }
 
 const page = await context.newPage();
-await page.route("**/*", route => {
-  const type = route.request().resourceType();
-
-  if (
-    type === "image" ||
-    type === "font" ||
-    type === "media"
-  ) {
-      return route.abort();
-  }
-
-  route.continue();
-});
 
 // 로그인
 let loginSuccess = true;
