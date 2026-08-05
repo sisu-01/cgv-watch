@@ -9,6 +9,7 @@ services:
     environment:
       TZ: Asia/Seoul
       SCREEN_YMD: ${SCREEN_YMD}
+      IS_DEV: ${IS_DEV:-false}   # 기본값 false
 
     env_file:
       - .env

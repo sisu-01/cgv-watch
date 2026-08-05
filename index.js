@@ -33,7 +33,7 @@ process.on("unhandledRejection", async (reason) => {
 });
 
 // isDev: 개발 할 때 미리 설정해놓은 쿠키 로그인 및 checking 무조건 걸림
-const isDev = process.argv.includes("--dev");
+const isDev = process.argv.includes("--dev") || process.env.IS_DEV === "true";
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const MOVIE_TITLE = process.env.MOVIE_TITLE;
