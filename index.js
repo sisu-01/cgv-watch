@@ -40,7 +40,20 @@ const MOVIE_TITLE = process.env.MOVIE_TITLE;
 const SCREEN_YMD = process.env.SCREEN_YMD;
 
 // 브라우저 생성
-const browser = await chromium.launch({ headless: false });
+const browser = await chromium.launch({
+  headless: false,
+  args: [
+    "--disable-gpu",
+    "--disable-software-rasterizer",
+    "--disable-extensions",
+    "--disable-plugins",
+    "--disable-popup-blocking",
+    "--disable-renderer-backgrounding",
+    "--disable-background-networking",
+    "--mute-audio",
+    "--no-first-run",
+  ]
+});
 const context = await browser.newContext({
   viewport: { width: 1280, height: 900 }
 });
@@ -64,6 +77,19 @@ if (isDev) {
 }
 
 const page = await context.newPage();
+await page.route("**/*", route => {
+  const type = route.request().resourceType();
+
+  if (
+    type === "image" ||
+    type === "font" ||
+    type === "media"
+  ) {
+      return route.abort();
+  }
+
+  route.continue();
+});
 
 // 로그인
 let loginSuccess = true;
