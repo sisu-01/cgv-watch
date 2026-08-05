@@ -102,7 +102,7 @@ async function selectSeats (page) {
         const count = await seatLocator.count();
         if (count === 0) {
           // console.log(`❌ ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
-          logger.info(`❌ ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
+          // logger.info(`❌ ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
@@ -116,31 +116,31 @@ async function selectSeats (page) {
         // 1. 만약 이미 선택된 좌석(disabled)이라면 바로 pass
         if (info.disabled) {
           // console.log(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
-          logger.info(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`)
+          // logger.info(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`)
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
         if (info.title === '선택됨') {
           // console.log(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
-          logger.info(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
+          // logger.info(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
           seatIndex++;
           continue;
         }
         // 2. 선택 가능한 좌석이라면 클릭 시도!
         // console.log(`✅ ${currentSeatName} 좌석 선택 성공!`);
-        logger.info(`✅ ${currentSeatName} 좌석 선택 성공!`);
+        // logger.info(`✅ ${currentSeatName} 좌석 선택 성공!`);
         await seatLocator.click();
 
         // 선택완료 버튼 비활성화 돼있음.. 아직 선택안된 인원이 있는 것
         const finishLocator = page.getByRole('button').filter({ hasText: /^선택완료$/ });
         if (await finishLocator.isDisabled()) {
           // console.log('하지만 아직 더 남았다.');
-          logger.info('하지만 아직 더 남았다.');
+          // logger.info('하지만 아직 더 남았다.');
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
         // console.log(`✅ 전좌석 선택 완료!`);
-        logger.info(`✅ 전좌석 선택 완료!`);
+        // logger.info(`✅ 전좌석 선택 완료!`);
         isSeatSelected = true; // 루프 탈출 조건 충족
         isSuccess = true;
       } catch (error) {
@@ -162,7 +162,7 @@ async function selectSeats (page) {
     if (isAlready) {
       // console.log('⚠️ 이선좌 발생');
       // console.log(`좌석 재시도 ${retryCount}/20`);
-      logger.info(`이선좌 발생 좌석 재시도 ${retryCount}/20`)
+      logger.info(`이선좌 발생 좌석 재시도 ${retryCount}/20`);
       await page.getByRole('button', { name: '확인' }).click();
       continue;
     } else {
