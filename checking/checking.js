@@ -45,6 +45,7 @@ export async function checking(isDev = false) {
       }
       const current = JSON.stringify(data.data);
       if (isDev) {
+        logger.info(previous);
         logger.info(current);
       }
       
