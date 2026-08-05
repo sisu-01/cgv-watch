@@ -86,6 +86,9 @@ if (!isDev) {
 }
 
 if (loginSuccess) {
+  // origin cgv로 하면서 로딩 빠르게
+  await page.goto("https://cgv.co.kr/robots.txt");
+  
   const start = performance.now();
   // 영화 오픈 체크
   const movieData = await checking(isDev);
