@@ -44,6 +44,7 @@ const browser = await chromium.launch({
   headless: false,
   args: [
     "--disable-gpu",
+    "--disable-dev-shm-usage",
     "--disable-software-rasterizer",
     "--disable-extensions",
     "--disable-plugins",
