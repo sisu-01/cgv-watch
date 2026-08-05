@@ -59,6 +59,7 @@ async function goToBookingPage(page, data) {
   }, session);
 
   await page.goto(`${baseUrl}?${params.toString()}`);
+  logger.info("예매 페이지 이동");
 }
 
 async function selectSeats (page) {

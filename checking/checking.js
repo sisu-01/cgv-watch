@@ -22,7 +22,6 @@ const SCREENS_NUMBER = process.env.SCREENS_NUMBER;
 const MOVIE_MIN_TIME = process.env.MOVIE_MIN_TIME;
 const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
 
-
 export async function checking(isDev = false) {
 
   // 0~5000ms 랜덤 대기
@@ -30,6 +29,8 @@ export async function checking(isDev = false) {
   await new Promise(resolve => setTimeout(resolve, delay));
 
   await send_message(`CGV 감시 시작 👀\n\n인원: ${COUNT}\n제목: ${MOVIE_TITLE}\n상영일: ${SCREEN_YMD}\n상영 시각: ${MOVIE_MIN_TIME}~${MOVIE_MAX_TIME}`);
+  logger.info(`CGV 감시 시작 인원: ${COUNT}\n제목: ${MOVIE_TITLE}\n상영일: ${SCREEN_YMD}\n상영 시각: ${MOVIE_MIN_TIME}~${MOVIE_MAX_TIME}`);
+
   let previous = isDev ? "[]" : null;
   let lastHeartbeatDate = "";
 
@@ -53,6 +54,7 @@ export async function checking(isDev = false) {
           MOVIE_MAX_TIME
         );
         if (result) {
+          logger.info('발견');
           return result;
         }
         send_message("상영관은 열렸지만 선택한 것은 없음.");
