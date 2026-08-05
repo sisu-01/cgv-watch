@@ -93,10 +93,10 @@ async function selectSeats (page) {
     await waitAndChangeModalTransform(page);
     while (seatIndex < TARGET_SEATS.length && !isSeatSelected) {
       // console.log(seatIndex, TARGET_SEATS.length, !isSeatSelected);
-      logger.info(`seatIndex: ${seatIndex}, TARGET_SEATS.length: ${TARGET_SEATS.length}, !isSeatSelected: ${!isSeatSelected}`);
+      // logger.info(`seatIndex: ${seatIndex}, TARGET_SEATS.length: ${TARGET_SEATS.length}, !isSeatSelected: ${!isSeatSelected}`);
       const currentSeatName = TARGET_SEATS[seatIndex];
       // console.log(`[시도] ${currentSeatName} 좌석 확인 중...`);
-      logger.info(`[시도] ${currentSeatName} 좌석 확인 중...`);
+      // logger.info(`[시도] ${currentSeatName} 좌석 확인 중...`);
       try {
         // 정규식을 사용해 해당 좌석 번호의 2번째(진짜) 버튼 지정
         // 미리보기 그거때문에 두개임 ㅇㅇ
