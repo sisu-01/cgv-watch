@@ -10,7 +10,6 @@ import { send_message } from "./telegram/telegram.js";
 // 로그인 성공 -> 소용돌이 출력까지 너무 느려, loop1 다음까지 느려
 
 logger.info("시작!");
-const start = performance.now();
 
 // 종료 이벤트 등록
 // process.on("SIGINT", async () => {
@@ -73,6 +72,7 @@ if (!isDev) {
 }
 
 if (loginSuccess) {
+  const start = performance.now();
   // 영화 오픈 체크
   const movieData = await checking(isDev);
 
