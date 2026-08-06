@@ -16,3 +16,4 @@ services:
 
     volumes:
       - ./logs/${SCREEN_YMD}:/app/logs
+      - ./debug/${SCREEN_YMD}:/app/debug
