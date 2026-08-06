@@ -41,7 +41,7 @@ const SCREEN_YMD = process.env.SCREEN_YMD;
 
 // 브라우저 생성
 const browser = await chromium.launch({
-  headless: false,
+  headless: true,
   args: [
     "--disable-gpu",
     "--disable-dev-shm-usage",
@@ -55,8 +55,17 @@ const browser = await chromium.launch({
     "--no-first-run",
   ]
 });
+
 const context = await browser.newContext({
-  viewport: { width: 1280, height: 900 }
+  viewport: { width: 1280, height: 900 },
+  locale: "ko-KR",
+  timezoneId: "Asia/Seoul",
+  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+  extraHTTPHeaders: {
+    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Upgrade-Insecure-Requests": "1",
+    "DNT": "1",
+  },
 });
 
 // --dev 면 미리 설정한 쿠키로 로그인
@@ -93,7 +102,11 @@ if (loginSuccess) {
   const movieData = await checking(isDev);
 
   // 영화 예매 및 결제 페이지까지 이동
+  const start = performance.now();
   const paymentCode = await booking(page, movieData);
+  const end = performance.now();
+  console.log(`${end - start} ms`);
+  send_message(`${end - start} ms`);
 
   if (paymentCode) {
     logger.info(`🎉 예매 성공 ${paymentCode}`);
