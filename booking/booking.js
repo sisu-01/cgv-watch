@@ -77,6 +77,12 @@ async function selectSeats (page) {
     await targetButton.click();
     await page.locator('button', { hasText: /^선택$/ }).click();
 
+    // 속도 타협 x
+    // const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
+    // const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
+    // await targetButton.evaluate(el => el.click());
+    // await page.locator('button', { hasText: /^선택$/ }).evaluate(el => el.click());
+
     // 좌석 선택
     let seatIndex = 0;
     let isSeatSelected = false;
@@ -123,8 +129,6 @@ async function selectSeats (page) {
           seatIndex++;
           continue;
         }
-        console.log(`${currentSeatName} 클릭하기 6초전`);
-        await new Promise(resolve => setTimeout(resolve, 6000));
         
         // 2. 선택 가능한 좌석이라면 클릭 시도!
         const seatLocator = page.locator("button[data-seatlocno]").filter({hasText: new RegExp(`^${currentSeatName}$`)}).nth(1);
@@ -165,7 +169,7 @@ async function selectSeats (page) {
         seatIndex++;
       }
     }
-    //while 끝!
+    //안쪽 while 종료 지점 !
 
     // 에러 났거나,, 전체 순회했는데도 예매 못 한 경우.. ㅠㅠ
     if (!isSeatSelected) {
@@ -178,14 +182,14 @@ async function selectSeats (page) {
     const isAlready = await isAlreadySelectedModal(page);
     if (isAlready) {
       logger.info(`이선좌 ${retryCount}/20`);
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      await page.getByRole('button', { name: '확인' }).click();
+      const modal = page.locator("section.modal-container");
+      await modal.getByRole("button", { name: "확인", exact: true }).click();
+      isSuccess = false;
       continue;
     } else {
       break;
     }
   }
-  // console.log("이선좌 컷~!");
   await page.getByRole('button', { name: /결제하기$/ }).click();
   await page.getByRole('button', { name: /결제하기$/ }).nth(1).click();
   return true;
