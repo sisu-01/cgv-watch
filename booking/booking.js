@@ -24,7 +24,6 @@ export async function booking(page, data) {
       return false;
     }
     const textCode = await payment(page);
-    await send_message(textCode);
     return textCode;
   } catch (error) {
     await send_message('booking.js\n', error);
@@ -60,12 +59,9 @@ async function goToBookingPage(page, data) {
 }
 
 async function selectSeats (page) {
-  //좌석 범위 목록들 정가운데서 시계방향으로 회오리~
 
+  //좌석 범위 목록들 정가운데서 시계방향으로 회오리~
   const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
-  // console.log(TARGET_SEATS);
-  // logger.info(`START_ROW: ${START_ROW}, END_ROW: ${END_ROW} START_COL: ${START_COL} END_COL: ${END_COL}`);
-  // logger.info(TARGET_SEATS);
   
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
   // 최대 도전 회수
@@ -73,8 +69,6 @@ async function selectSeats (page) {
   let isSuccess = false;
   while (retryCount < 20 && !isSuccess) {
     retryCount++;
-    // console.log("loop", retryCount);
-    // logger.info(`loop ${retryCount}`);
 
     // 인원 선택
     const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
@@ -86,83 +80,105 @@ async function selectSeats (page) {
     // 좌석 선택
     let seatIndex = 0;
     let isSeatSelected = false;
+
     // 모든 좌석 클릭 가능하게 화면 줄이기
     await waitAndChangeModalTransform(page);
+
+    const seatMap = new Map(
+      await page.locator("button[data-seatlocno]").evaluateAll(buttons =>
+        buttons
+          .slice(buttons.length / 2)
+          .map(el => [
+            el.innerText.trim(),
+            {
+              name: el.innerText.trim(),
+              disabled: el.disabled,
+              title: el.title,
+            }
+          ])
+      )
+    );
+
     while (seatIndex < TARGET_SEATS.length && !isSeatSelected) {
-      // console.log(seatIndex, TARGET_SEATS.length, !isSeatSelected);
-      // logger.info(`seatIndex: ${seatIndex}, TARGET_SEATS.length: ${TARGET_SEATS.length}, !isSeatSelected: ${!isSeatSelected}`);
-      const currentSeatName = TARGET_SEATS[seatIndex];
-      // console.log(`[시도] ${currentSeatName} 좌석 확인 중...`);
-      // logger.info(`[시도] ${currentSeatName} 좌석 확인 중...`);
       try {
-        // 정규식을 사용해 해당 좌석 번호의 2번째(진짜) 버튼 지정
-        // 미리보기 그거때문에 두개임 ㅇㅇ
-        const seatLocator = page.locator("button", {hasText: new RegExp(`^${currentSeatName}$`)}).nth(1);
-        //숫자 세서 진짜 있는지 봐야됨. 좌석 존재하지 않는 경우도 있음
-        const count = await seatLocator.count();
-        if (count === 0) {
+        // 좌석 index
+        const currentSeatName = TARGET_SEATS[seatIndex];
+        const seatInfo = seatMap.get(currentSeatName);
+        
+        // 0. 좌석 존재 여부 확인
+        if (!seatInfo) {
           // console.log(`❌ ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
-          // logger.info(`❌ ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
-
-        // 있는거 확인 했으면 disabled, title 가져오기
-        const info = await seatLocator.evaluate(el => ({
-            disabled: el.disabled,
-            title: el.title
-        }));
         
         // 1. 만약 이미 선택된 좌석(disabled)이라면 바로 pass
-        if (info.disabled) {
+        if (seatInfo.disabled) {
           // console.log(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
-          // logger.info(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`)
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
-        if (info.title === '선택됨') {
-          // console.log(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
-          // logger.info(`⚠️ ${currentSeatName} 좌석은 내가 선택한 좌석입니다.`);
+        if (seatInfo.title === '선택됨') {
+          // console.log(`⚠️ ${currentSeatName}: 이미 선택됨.`);
           seatIndex++;
           continue;
         }
+        console.log(`${currentSeatName} 클릭하기 6초전`);
+        await new Promise(resolve => setTimeout(resolve, 6000));
+        
         // 2. 선택 가능한 좌석이라면 클릭 시도!
-        // console.log(`✅ ${currentSeatName} 좌석 선택 성공!`);
-        // logger.info(`✅ ${currentSeatName} 좌석 선택 성공!`);
+        const seatLocator = page.locator("button[data-seatlocno]").filter({hasText: new RegExp(`^${currentSeatName}$`)}).nth(1);
         await seatLocator.click();
+        
+        // 3. 현재 선택된 좌석만 가져오기
+        const selectedSeats = await page
+          .locator('button[data-seatlocno][title="선택됨"]')
+          .evaluateAll(buttons =>
+            buttons.slice(buttons.length / 2)
+            .map(el => el.innerText.trim())
+          );
 
-        // 선택완료 버튼 비활성화 돼있음.. 아직 선택안된 인원이 있는 것
-        const finishLocator = page.getByRole('button').filter({ hasText: /^선택완료$/ });
-        if (await finishLocator.isDisabled()) {
+        // 4. seatMap 반영
+        for (const seatName of selectedSeats) {
+          const seatInfo = seatMap.get(seatName);
+
+          if (seatInfo) {
+            seatMap.set(seatName, {
+              ...seatInfo,
+              title: "선택됨"
+            });
+          }
+        }
+
+        // 모두 선택 됐니?
+        // 아니요 돌아갈게요.
+        if (Number(COUNT) !== selectedSeats.length) {
           // console.log('하지만 아직 더 남았다.');
-          // logger.info('하지만 아직 더 남았다.');
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
         // console.log(`✅ 전좌석 선택 완료!`);
-        // logger.info(`✅ 전좌석 선택 완료!`);
         isSeatSelected = true; // 루프 탈출 조건 충족
         isSuccess = true;
       } catch (error) {
-        // 로딩이 안 되었거나 unexpected 에러 발생 시 안전하게 다음으로 패스
-        // console.log(`⚠️ ${currentSeatName} 탐색 중 에러 발생 (패스합니다)`);
-        // console.log(error);
         logger.error(error);
         seatIndex++;
       }
     }
+    //while 끝!
+
+    // 에러 났거나,, 전체 순회했는데도 예매 못 한 경우.. ㅠㅠ
     if (!isSeatSelected) {
-      // console.log("😭 준비한 모든 좌석이 매진되었습니다.");
       logger.info("😭 준비한 모든 좌석이 매진되었습니다.");
       await screenCaptureAndSaveHtml(page);
       return false;
     }
+
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();
     const isAlready = await isAlreadySelectedModal(page);
     if (isAlready) {
-      // console.log('⚠️ 이선좌 발생');
-      // console.log(`좌석 재시도 ${retryCount}/20`);
       logger.info(`이선좌 ${retryCount}/20`);
+      await new Promise(resolve => setTimeout(resolve, 10000));
       await page.getByRole('button', { name: '확인' }).click();
       continue;
     } else {
