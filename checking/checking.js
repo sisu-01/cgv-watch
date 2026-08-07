@@ -58,8 +58,8 @@ export async function checking(isDev = false) {
           MOVIE_MAX_TIME
         );
         if (result) {
-          send_message('발견');
-          logger.info('발견');
+          // send_message('발견');
+          // logger.info('발견');
           return result;
         }
         // send_message("상영관은 열렸지만 선택한 것은 없음.");
