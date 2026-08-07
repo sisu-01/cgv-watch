@@ -183,7 +183,10 @@ async function selectSeats (page) {
     if (isAlready) {
       logger.info(`이선좌 ${retryCount}/20`);
       const modal = page.locator("section.modal-container");
-      await modal.getByRole("button", { name: "확인", exact: true }).click();
+      await expect(modal).toBeVisible();
+      const confirmButton = modal.getByRole("button", { name: "확인", exact: true, });
+      await confirmButton.waitFor({ state: "visible" });
+      await confirmButton.click();
       isSuccess = false;
       continue;
     } else {
