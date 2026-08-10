@@ -97,7 +97,7 @@ async function selectSeats (page) {
           .map(el => [
             el.innerText.trim(),
             {
-              name: el.innerText.trim(),
+              seatlocno: el.getAttribute("data-seatlocno"),
               disabled: el.disabled,
               title: el.title,
             }
@@ -117,24 +117,24 @@ async function selectSeats (page) {
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
-        
-        // 1. 만약 이미 선택된 좌석(disabled)이라면 바로 pass
-        if (seatInfo.disabled) {
-          // console.log(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
-          seatIndex++; // 다음 좌석 인덱스로
-          continue;
-        }
+        // 1. 내가 선택한 좌석이면 pass
         if (seatInfo.title === '선택됨') {
           // console.log(`⚠️ ${currentSeatName}: 이미 선택됨.`);
           seatIndex++;
           continue;
         }
+        // 2. 만약 이미 선택된 좌석(disabled)이라면 바로 pass
+        if (seatInfo.disabled) {
+          // console.log(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
+          seatIndex++; // 다음 좌석 인덱스로
+          continue;
+        }
         
-        // 2. 선택 가능한 좌석이라면 클릭 시도!
-        const seatLocator = page.locator("button[data-seatlocno]").filter({hasText: new RegExp(`^${currentSeatName}$`)}).nth(1);
+        // 3. 선택 가능한 좌석이라면 클릭 시도!
+        const seatLocator = page.locator(`button[data-seatlocno="${seatInfo.seatlocno}"]`).nth(1);
         await seatLocator.click();
-        
-        // 3. 현재 선택된 좌석만 가져오기
+       
+        // 4. 현재 선택된 좌석만 가져오기
         const selectedSeats = await page
           .locator('button[data-seatlocno][title="선택됨"]')
           .evaluateAll(buttons =>
@@ -142,7 +142,7 @@ async function selectSeats (page) {
             .map(el => el.innerText.trim())
           );
 
-        // 4. seatMap 반영
+        // 5. seatMap 반영
         for (const seatName of selectedSeats) {
           const seatInfo = seatMap.get(seatName);
 
