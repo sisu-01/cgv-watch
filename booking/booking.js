@@ -17,7 +17,7 @@ const CNB = process.env.CARD;
 export async function booking(page, data) {
   try {
     await goToBookingPage(page, data);
-    const isSuccess = await selectSeats(page);
+    const isSuccess = await selectSeats(page);    
     if (!isSuccess) {
       await send_message("😭 booking 좌석 선택 실패했어요 ㅠㅠㅠ");
       logger.info("booking 좌석 선택 실패");
@@ -67,6 +67,9 @@ async function selectSeats (page) {
   // 최대 도전 회수
   let retryCount = 0;
   let isSuccess = false;
+
+  const start = performance.now();
+
   while (retryCount < 20 && !isSuccess) {
     retryCount++;
 
@@ -193,6 +196,10 @@ async function selectSeats (page) {
       break;
     }
   }
+  const end = performance.now();
+  console.log(`${end - start} ms`);
+  send_message(`${end - start} ms`);
+  
   await page.getByRole('button', { name: /결제하기$/ }).click();
   await page.getByRole('button', { name: /결제하기$/ }).nth(1).click();
   return true;

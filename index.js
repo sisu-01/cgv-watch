@@ -102,11 +102,7 @@ if (loginSuccess) {
   const movieData = await checking(isDev);
 
   // 영화 예매 및 결제 페이지까지 이동
-  const start = performance.now();
   const paymentCode = await booking(page, movieData);
-  const end = performance.now();
-  console.log(`${end - start} ms`);
-  send_message(`${end - start} ms`);
 
   if (paymentCode) {
     logger.info(`🎉 예매 성공 ${paymentCode}`);
