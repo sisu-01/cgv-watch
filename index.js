@@ -1,7 +1,8 @@
 import { chromium } from "playwright";
+import { login } from "./login/login.js";
 import { checking } from "./checking/checking.js";
 import { booking } from "./booking/booking.js";
-import { login } from "./login/login.js";
+import { payment } from "./payment/payment.js";
 import logger from "./utils/logger.js";
 import { update_history } from "./utils/utils.js";
 import { performance } from "node:perf_hooks";
@@ -101,27 +102,38 @@ if (loginSuccess) {
   // 영화 오픈 체크
   const movieData = await checking(isDev);
 
-  // 영화 예매 및 결제 페이지까지 이동
-  const paymentCode = await booking(page, movieData);
+  // 좌석 선택
+  const isSuccess = await booking(page, movieData);
+  if (isSuccess) {
 
-  if (paymentCode) {
-    logger.info(`🎉 예매 성공 ${paymentCode}`);
-
+    // 결제
+    const { isComplete, paymentCode } = await payment(page);
+    
     // 오픈 언제 열렸는지 기록
     update_history(MOVIE_TITLE, SCREEN_YMD)
-    
-    // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
-    const interval = setInterval(async () => {
-      await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n결제 코드: ${paymentCode}`);
-    }, 10 * 1000);
-    await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
-    clearInterval(interval);
 
+    if (isComplete && paymentCode === null) {
+      logger.info(`🎉 예매 성공 영화 관람권`);
+      await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공 및 결제완료\n영화 관람권 써서 다 끝냈다~ 🎟️`);
+    }
+    if (!isComplete && paymentCode !== null) {
+      logger.info(`🎉 예매 성공 ${paymentCode}`);
+
+      // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
+      const interval = setInterval(async () => {
+        await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n결제 코드: ${paymentCode}`);
+      }, 10 * 1000);
+      await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
+      
+      clearInterval(interval);
+    }
+    if (!isComplete && paymentCode === null) {
+      await send_message("😭 index 결제 실패했어요 ㅠㅠㅠ");
+      logger.info("index 결제 실패");
+    }
   } else {
-    logger.warn("❌ 예매 실패");
+    await send_message("😭 booking 좌석 선택 실패했어요 ㅠㅠㅠ");
+    logger.info("booking 좌석 선택 실패");
   }
 }
-await browser.close();
-
-// const b = await booking(a);
-// console.log(b);
+// await browser.close();

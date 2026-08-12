@@ -12,19 +12,12 @@ const START_ROW = process.env.START_ROW;
 const END_ROW = process.env.END_ROW;
 const START_COL = Number(process.env.START_COL);
 const END_COL = Number(process.env.END_COL);
-const CNB = process.env.CARD;
 
 export async function booking(page, data) {
   try {
     await goToBookingPage(page, data);
     const isSuccess = await selectSeats(page);    
-    if (!isSuccess) {
-      await send_message("😭 booking 좌석 선택 실패했어요 ㅠㅠㅠ");
-      logger.info("booking 좌석 선택 실패");
-      return false;
-    }
-    const textCode = await payment(page);
-    return textCode;
+    return isSuccess;
   } catch (error) {
     await send_message('booking.js\n', error);
     logger.error(error)
@@ -203,22 +196,4 @@ async function selectSeats (page) {
   await page.getByRole('button', { name: /결제하기$/ }).click();
   await page.getByRole('button', { name: /결제하기$/ }).nth(1).click();
   return true;
-}
-
-export async function payment (page) {
-  // cgv 결제창
-  await page.waitForLoadState('networkidle');
-  // 약관 동의
-  await page.locator('input#chkAll').click({ force: true });
-  // 앱카드 클릭
-  await page.getByRole('button', { name: '앱카드' }).click();
-  await page.locator('select#select1234').click();
-  await page.locator(`button#${CNB}`).click();
-  await page.getByRole('button', { name: /결제하기$/ }).click();
-
-  //kb 결제창
-  await page.locator('#kmotion-link').click();
-  const textCode = await page.locator('#tcode').innerText();
-  // console.log("결제코드:", textCode);
-  return textCode;
 }
