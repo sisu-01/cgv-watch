@@ -2,7 +2,7 @@ import { send_message } from '../telegram/telegram.js';
 import logger from "../utils/logger.js";
 
 const COUNT = Number(process.env.COUNT);
-const USE_TICKET = Boolean(process.env.USE_TICKET);
+const USE_TICKET = process.env.USE_TICKET === 'true';
 const CARD = process.env.CARD;
 
 export async function payment (page) {
