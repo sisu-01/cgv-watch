@@ -1,4 +1,4 @@
-import { chromium, expect } from 'playwright';
+import { chromium } from 'playwright';
 import fs from 'fs';
 import 'dotenv/config'
 import { printSpiralSeats, screenCaptureAndSaveHtml, waitAndChangeModalTransform } from './utils.js';
@@ -178,11 +178,22 @@ async function selectSeats (page) {
     const isAlready = await isAlreadySelectedModal(page);
     if (isAlready) {
       logger.info(`이선좌 ${retryCount}/20`);
-      const modal = page.locator("section.modal-container");
-      await expect(modal).toBeVisible();
-      const confirmButton = modal.getByRole("button", { name: "확인", exact: true, });
-      await confirmButton.waitFor({ state: "visible" });
+      const modal = page
+        .locator(".cgv-modal")
+        .filter({
+          hasText: "선택하신 좌석은 이미 다른 고객이 예매 중인 좌석입니다",
+        });
+
+      const confirmButton = modal.getByRole("button", {
+        name: "확인",
+        exact: true,
+      });
+
       await confirmButton.click();
+
+      // 해당 이선좌 모달 자체가 DOM에서 제거될 때까지 대기
+      await modal.waitFor({ state: "detached" });
+
       isSuccess = false;
       continue;
     } else {
