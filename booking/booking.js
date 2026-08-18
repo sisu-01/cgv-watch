@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium, expect } from 'playwright';
 import fs from 'fs';
 import 'dotenv/config'
 import { printSpiralSeats, screenCaptureAndSaveHtml, waitAndChangeModalTransform } from './utils.js';
