@@ -1,3 +1,5 @@
+import { screenCaptureAndSaveHtml } from '../booking/utils.js';
+import { watchPaymentTimeModal } from './utils.js';
 import { send_message } from '../telegram/telegram.js';
 import logger from "../utils/logger.js";
 
@@ -7,11 +9,13 @@ const CARD = process.env.CARD;
 
 export async function payment (page) {
   try {
+    const controller = new AbortController();
+    const modalWatcher = watchPaymentTimeModal(page, controller.signal);
     // cgv 결제창
     await page.waitForLoadState('networkidle');
     // 약관 동의
     await page.locator('input#chkAll').click({ force: true });
-  
+      
     let isComplete = false;
     let paymentCode = null;
     if (USE_TICKET) {
@@ -19,6 +23,7 @@ export async function payment (page) {
     } else {
       paymentCode = await useAppCard(page);
     }
+    
     
     // 영화 관람권을 쓰면 이후 결제 필요 없으니까 isComplete고,
     // 앱카드 썼으면 수동 결제 필요하니까 isComplete false에 paymentCode return
@@ -41,7 +46,9 @@ async function useTicket(page) {
   try {
 
     // CGV영화관람권/기프트콘 클릭
-    await page.getByRole('button', { name: 'CGV영화관람권/기프트콘', exact: true}).click();
+    const btn = await page.getByRole('button', { name: 'CGV영화관람권/기프트콘', exact: true});
+    await btn.waitFor({state: 'visible',timeout: 60000});
+    await btn.click();
     await page.waitForLoadState('networkidle');
 
     // 관람권 인원수만큼 반복문 클릭
@@ -64,6 +71,7 @@ async function useTicket(page) {
     return true;
   } catch (error) {
     logger.error(error);
+    screenCaptureAndSaveHtml(page);
     return false;
   }
 }
@@ -71,7 +79,9 @@ async function useTicket(page) {
 // 앱카드 클릭
 async function useAppCard(page) {
   try {
-    await page.getByRole('button', { name: '앱카드' }).click();
+    const appCard = await page.getByRole('button', { name: '앱카드' });
+    await appCard.waitFor({state: 'visible',timeout: 60000});
+    await appCard.click();
     await page.locator('select#select1234').click();
     await page.locator(`button#${CARD}`).click();
     await page.getByRole('button', { name: /결제하기$/ }).click();
@@ -81,6 +91,7 @@ async function useAppCard(page) {
 
   } catch (error) {
     logger.error(error);
+    screenCaptureAndSaveHtml(page);
     return null;
   }
 }
@@ -91,3 +102,4 @@ async function useCNB(page) {
   const paymentCode = await page.locator('#tcode').innerText();
   return paymentCode;
 }
+
