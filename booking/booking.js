@@ -175,7 +175,12 @@ async function selectSeats (page) {
       return false;
     }
 
+
+    // 개발용 딜레이
+    // await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+    
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();
+
     const isAlready = await isAlreadySelectedModal(page);
     if (isAlready) {
       logger.info(`이선좌 ${retryCount}/20`);
@@ -191,9 +196,21 @@ async function selectSeats (page) {
       });
 
       await confirmButton.click();
+      logger.info('이선좌 확인 클릭 완료');
 
       // 해당 이선좌 모달 자체가 DOM에서 제거될 때까지 대기
       await modal.waitFor({ state: "detached" });
+      logger.info('이선좌 모달 detached');
+
+      // searchSiteByPosiStoNo pending 끝나야 예매창 사라지는데,
+      // 사람 몰리면 예매창이 늦게 사라진다.
+      await page.waitForFunction(() => {
+        // 0: 좌석 선택, 1: 좌석 선택에서 인원 변경, 2: 임직원 번호 입력
+        const modal = document.querySelectorAll('.cgv-modal.cgv-bot-modal')[0];
+
+        return modal && !modal.classList.contains('active');
+      });
+      logger.info('좌석 선택 모달 inactive');
 
       isSuccess = false;
       continue;
@@ -202,8 +219,16 @@ async function selectSeats (page) {
     }
   }
   const end = performance.now();
-  console.log(`${end - start} ms`);
   send_message(`${end - start} ms`);
+
+  // searchSiteByPosiStoNo pending 끝나야 예매창 사라지는데,
+  // 사람 몰리면 예매창이 늦게 사라진다.
+  await page.waitForFunction(() => {
+    // 0: 좌석 선택, 1: 좌석 선택에서 인원 변경, 2: 임직원 번호 입력
+    const modal = document.querySelectorAll('.cgv-modal.cgv-bot-modal')[0];
+
+    return modal && !modal.classList.contains('active');
+  });
   
   await page.getByRole('button', { name: /결제하기$/ }).click();
   await page.getByRole('button', { name: /결제하기$/ }).nth(1).click();
