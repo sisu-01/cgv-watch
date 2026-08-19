@@ -44,10 +44,10 @@ export async function checking(isDev = false) {
         continue;
       }
       const current = JSON.stringify(data.data);
-      if (isDev) {
-        logger.info(previous);
-        logger.info(current);
-      }
+      // if (isDev) {
+      //   logger.info(previous);
+      //   logger.info(current);
+      // }
       
       if (previous && previous !== current) {
         const result = findEarliestScreening(
