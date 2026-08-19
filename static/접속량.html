@@ -1,0 +1,254 @@
+<div id="NetFunnel_Loading_Popup" style="display: block; top: 12px; left: 284.5px; position: absolute; visibility: visible; z-index: 32002;">
+  <div>
+    <div class="mets01091-container">
+      <div class="l-center">
+        <div class="empty-section">
+          <img alt="" class="img" src="/images/mco/img/img_mascot06.png">
+          <h3 class="title">동시 접속량이 많아 대기중입니다.</h3>
+          <p class="dec">
+            새로고침, 재접속 하시면 대기시간이 더 길어집니다.<br>
+            CGV에 많은 사랑주셔서 감사드립니다.
+          </p>
+        </div>
+        <div class="card-layout-gry">
+          <dl class="mets01091-countList">
+            <dt class="mets01091-count">대기인원</dt>
+            <dd class="mets01091-count"><b><span id="NetFunnel_Loading_Popup_Count" class="다수">3810</span></b>명</dd>
+          </dl>
+          <dl class="mets01091-countList">
+            <dt class="mets01091-count">예상 대기시간</dt>
+            <dd class="mets01091-count" id="NetFunnel_timer"><b>2</b>분 <b>27</b>초</dd>
+          </dl>
+          <div class="mets01091-gradiBarWrap">
+            <span class="mets01091-gradiBar"><span class="voice-only">로딩중</span></span>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+  html,
+  body,
+  div,
+  p,
+  span,
+  img,
+  svg,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  section,
+  aside,
+  article,
+  header,
+  footer,
+  nav,
+  input,
+  button,
+  ol,
+  ul,
+  dl,
+  li,
+  dt,
+  dd,
+  textarea,
+  label,
+  select {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font: inherit;
+    line-height: 1;
+    letter-spacing: -0.02rem;
+    font-family: "Pretendard", "Pretendard Variable", Pretendard,
+    -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue",
+    "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    vertical-align: baseline;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    font-feature-settings: "cv09" on, "cv03" on, "cv04" on;
+  }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    font-size: 10px;
+    scroll-behavior: smooth;
+    color: color(text);
+  }
+  html {overflow: hidden;}
+  .NetFunnel_stop_x:hover {color:#000 !important;}
+  .NetFunnel_stop_x:after{content:'\d7';font-size:23px !important;}
+  a,
+  button {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: color(text);
+    text-underline-position: under;
+  }
+  a {
+    text-decoration: none;
+    cursor: pointer;
+  }
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="search"] {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    box-shadow: none;
+  }
+  input[type="text"]::placeholder,
+  input[type="password"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="tel"]::placeholder,
+  input[type="url"]::placeholder,
+  input[type="number"]::placeholder,
+  input[type="search"]::placeholder {
+    color: color(gray500);
+  }
+  input::-webkit-search-cancel-button {
+    display: none;
+  }
+  ol,
+  ul,
+  dl {
+    list-style: none;
+  }
+  /* Reset img */
+  img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: top;
+  }
+  svg {
+    display: inline;
+  }
+  /* 큰 레이아웃 */
+  .mets01091-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100%;
+    margin-top: -24px;
+    padding: 0 40px;
+  }
+    .l-center {
+      max-width: 936px;
+    margin: 0 auto;
+  }
+    /* 공통 내용 영역 */
+    .voice-only {
+      position: absolute;
+    width: 1px;
+    height: 1px;
+    z-index: -1;
+    overflow: hidden;
+    font-size: 1px;
+    clip: rect(1px, 1px, 1px, 1px);
+  }
+    .empty-section {
+      z-index: 1;
+    position: relative;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+  }
+    .empty-section .img {
+      display: inline-block;
+    max-width: 130px;
+    width: auto;
+    height: auto;
+    margin: 0 auto 20px;
+  }
+    .empty-section .title {
+      font-weight: 700;
+    font-size: 1.9rem;
+    letter-spacing: -0.04rem;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+    .empty-section .dec {
+      font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    color: #707070;
+  }
+    /* 대기 표시 영역 */
+    .mets01091-container .card-layout-gry {
+      margin-top: 32px;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: #f4f4f4;
+  }
+    .mets01091-countList {
+      display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+    .mets01091-count {
+      font-size: 1.6rem;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+    .mets01091-count b {
+      font-weight: 700;
+    color: #fc5555;
+  }
+    /* 대기 바 */
+  @keyframes gradiLoading {
+    0% {
+        left: -100%;
+    }
+      80% {
+        left: 0%;
+    }
+      100% {
+        left: 0%;
+    }
+  }
+    .mets01091-gradiBarWrap {
+      overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 12px;
+    margin-top: 20px;
+    border-radius: 10px;
+    background-color: #e9e9e9;
+  }
+  .mets01091-gradiBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background-image: linear-gradient(to right, #ff7b51 0%, #ff3e6d 100%);
+    animation-name: gradiLoading;
+    animation-duration: 3000ms;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  </style>
+</div>
