@@ -20,7 +20,8 @@ export async function booking(page, data) {
     return isSuccess;
   } catch (error) {
     await send_message('booking.js\n', error);
-    logger.error(error)
+    await screenCaptureAndSaveHtml(page);
+    logger.error(error);
     return false;
   }
 }
