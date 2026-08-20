@@ -11,10 +11,16 @@ export async function payment (page) {
   try {
     const controller = new AbortController();
     const modalWatcher = watchPaymentTimeModal(page, controller.signal);
+    
     // cgv 결제창
     await page.waitForLoadState('networkidle');
+    
     // 약관 동의
-    await page.locator('input#chkAll').click({ force: true });
+    const chkAll = page.locator('input#chkAll');
+    while (!(await chkAll.isChecked())) {
+      await chkAll.click({ force: true });
+      await page.waitForTimeout(500);
+    }
       
     let isComplete = false;
     let paymentCode = null;
@@ -80,8 +86,7 @@ async function useTicket(page) {
 async function useAppCard(page) {
   try {
     const appCard = await page.getByRole('button', { name: '앱카드' });
-    await appCard.waitFor({state: 'visible',timeout: 60000});
-    await appCard.click();
+    await appCard.click({timeout: 99999999});
     await page.locator('select#select1234').click();
     await page.locator(`button#${CARD}`).click();
     await page.getByRole('button', { name: /결제하기$/ }).click();
@@ -97,9 +102,30 @@ async function useAppCard(page) {
 }
 
 // KB국민은행
-async function useCNB(page) {
-  await page.locator('#kmotion-link').click();
-  const paymentCode = await page.locator('#tcode').innerText();
-  return paymentCode;
+export async function useCNB(page) {
+  try {
+    // 클릭
+    await page.waitForLoadState('domcontentloaded');
+    const kmotionLink = page.locator('#kmotion-link');
+    await kmotionLink.waitFor({
+      state: 'visible'
+    });
+    await page.waitForLoadState('load');
+    await kmotionLink.click();
+  
+    // 로딩 기다려서 결제코드 잘 보기
+    const tcode = page.locator('#tcode');
+    await tcode.waitFor({ state: 'visible' });
+    await page.waitForFunction(
+      el => el.innerText.trim() !== '',
+      await tcode.elementHandle()
+    );
+    const paymentCode = await tcode.innerText();
+  
+    return paymentCode;
+  } catch (error) {
+    logger.error(error);
+    return null;
+  }
 }
 
