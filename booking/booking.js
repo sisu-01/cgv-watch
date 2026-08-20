@@ -12,6 +12,7 @@ const START_ROW = process.env.START_ROW;
 const END_ROW = process.env.END_ROW;
 const START_COL = Number(process.env.START_COL);
 const END_COL = Number(process.env.END_COL);
+const TARGET_SEATS = JSON.parse(process.env.SEATS);
 
 export async function booking(page, data) {
   try {
@@ -53,9 +54,9 @@ async function goToBookingPage(page, data) {
 }
 
 async function selectSeats (page) {
-
   //좌석 범위 목록들 정가운데서 시계방향으로 회오리~
-  const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
+  // const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
+  
   
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
   // 최대 도전 회수
