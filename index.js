@@ -89,6 +89,17 @@ if (isDev) {
 
 const page = await context.newPage();
 
+// 타임아웃 방지
+page.setDefaultTimeout(150000);
+page.setDefaultNavigationTimeout(150000);
+
+// 테스트용 모든 네트워크 느릐게
+// await page.route('**/*', async route => {
+//   const delay = 2000 + Math.random() * 5000;
+//   await new Promise(resolve => setTimeout(resolve, delay));
+//   await route.continue();
+// });
+
 // 로그인
 let loginSuccess = true;
 if (!isDev) {
@@ -105,7 +116,10 @@ if (loginSuccess) {
   // 좌석 선택
   const isSuccess = await booking(page, movieData);
   if (isSuccess) {
-
+    // 결제 천천히 해도 되니까 999
+    page.setDefaultTimeout(999999999);
+    page.setDefaultNavigationTimeout(999999999);
+    
     // 결제
     const { isComplete, paymentCode } = await payment(page);
     
