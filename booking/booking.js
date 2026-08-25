@@ -102,6 +102,9 @@ async function selectSeats (page) {
       )
     );
 
+    // 테스트해보자
+    await screenCaptureAndSaveHtml(page);
+
     while (seatIndex < TARGET_SEATS.length && !isSeatSelected) {
       try {
         // 좌석 index
@@ -175,13 +178,9 @@ async function selectSeats (page) {
       return false;
     }
 
-
     // 개발용 딜레이
     // await new Promise(resolve => setTimeout(resolve, 5 * 1000));
     
-    // 테스트해보자
-    await screenCaptureAndSaveHtml(page);
-
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();
 
     const isAlready = await isAlreadySelectedModal(page);
