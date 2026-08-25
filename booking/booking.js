@@ -102,9 +102,6 @@ async function selectSeats (page) {
       )
     );
 
-    // 테스트해보자
-    await screenCaptureAndSaveHtml(page);
-
     while (seatIndex < TARGET_SEATS.length && !isSeatSelected) {
       try {
         // 좌석 index
@@ -133,19 +130,19 @@ async function selectSeats (page) {
         // 3. 선택 가능한 좌석이라면 클릭 시도!
         const seatLocator = page.locator(`button[data-seatlocno="${seatInfo.seatlocno}"]`).nth(1);
         await seatLocator.click();
-       
+        
         // 4. 현재 선택된 좌석만 가져오기
         const selectedSeats = await page
-          .locator('button[data-seatlocno][title="선택됨"]')
-          .evaluateAll(buttons =>
-            buttons.slice(buttons.length / 2)
-            .map(el => el.innerText.trim())
-          );
-
+        .locator('button[data-seatlocno][title="선택됨"]')
+        .evaluateAll(buttons =>
+          buttons.slice(buttons.length / 2)
+          .map(el => el.innerText.trim())
+        );
+        
         // 5. seatMap 반영
         for (const seatName of selectedSeats) {
           const seatInfo = seatMap.get(seatName);
-
+          
           if (seatInfo) {
             seatMap.set(seatName, {
               ...seatInfo,
@@ -153,7 +150,7 @@ async function selectSeats (page) {
             });
           }
         }
-
+        
         // 모두 선택 됐니?
         // 아니요 돌아갈게요.
         if (Number(COUNT) !== selectedSeats.length) {
@@ -170,19 +167,22 @@ async function selectSeats (page) {
       }
     }
     //안쪽 while 종료 지점 !
-
+    
     // 에러 났거나,, 전체 순회했는데도 예매 못 한 경우.. ㅠㅠ
     if (!isSeatSelected) {
       logger.info("😭 준비한 모든 좌석이 매진되었습니다.");
       await screenCaptureAndSaveHtml(page);
       return false;
     }
-
+    
     // 개발용 딜레이
     // await new Promise(resolve => setTimeout(resolve, 5 * 1000));
     
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();
 
+    // 테스트해보자
+    await screenCaptureAndSaveHtml(page);
+    
     const isAlready = await isAlreadySelectedModal(page);
     if (isAlready) {
       logger.info(`이선좌 ${retryCount}/20`);
