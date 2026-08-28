@@ -62,8 +62,6 @@ async function selectSeats (page) {
   let retryCount = 0;
   let isSuccess = false;
 
-  const start = performance.now();
-
   while (retryCount < 20 && !isSuccess) {
     retryCount++;
 
@@ -220,8 +218,6 @@ async function selectSeats (page) {
       break;
     }
   }
-  const end = performance.now();
-  send_message(`${end - start} ms`);
 
   // searchSiteByPosiStoNo pending 끝나야 예매창 사라지는데,
   // 사람 몰리면 예매창이 늦게 사라진다.
