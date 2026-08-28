@@ -198,11 +198,11 @@ async function selectSeats (page) {
       });
 
       await confirmButton.click();
-      logger.info('이선좌 확인 클릭 완료');
+      // logger.info('이선좌 확인 클릭 완료');
 
       // 해당 이선좌 모달 자체가 DOM에서 제거될 때까지 대기
       await modal.waitFor({ state: "detached" });
-      logger.info('이선좌 모달 detached');
+      // logger.info('이선좌 모달 detached');
 
       // searchSiteByPosiStoNo pending 끝나야 예매창 사라지는데,
       // 사람 몰리면 예매창이 늦게 사라진다.
@@ -212,7 +212,7 @@ async function selectSeats (page) {
 
         return modal && !modal.classList.contains('active');
       });
-      logger.info('좌석 선택 모달 inactive');
+      // logger.info('좌석 선택 모달 inactive');
 
       isSuccess = false;
       continue;
