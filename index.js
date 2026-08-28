@@ -39,6 +39,7 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const MOVIE_TITLE = process.env.MOVIE_TITLE;
 const SCREEN_YMD = process.env.SCREEN_YMD;
+const OPEN_YMD = process.env.OPEN_YMD;
 
 // 브라우저 생성
 const browser = await chromium.launch({
@@ -124,7 +125,7 @@ if (loginSuccess) {
     const { isComplete, paymentCode } = await payment(page);
     
     // 오픈 언제 열렸는지 기록
-    update_history(MOVIE_TITLE, SCREEN_YMD)
+    update_history(MOVIE_TITLE, OPEN_YMD);
 
     if (isComplete && paymentCode === null) {
       logger.info(`🎉 예매 성공 영화 관람권`);
