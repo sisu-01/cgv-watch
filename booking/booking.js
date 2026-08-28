@@ -178,9 +178,6 @@ async function selectSeats (page) {
     
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();
 
-    // 테스트해보자
-    await screenCaptureAndSaveHtml(page);
-    
     const isAlready = await isAlreadySelectedModal(page);
     if (isAlready) {
       logger.info(`이선좌 ${retryCount}/20`);
