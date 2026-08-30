@@ -25,8 +25,8 @@ const MOVIE_MAX_TIME = process.env.MOVIE_MAX_TIME;
 export async function checking(isDev = false) {
 
   // 0~5000ms 랜덤 대기
-  const delay = Math.floor(Math.random() * 5000);
-  await new Promise(resolve => setTimeout(resolve, delay));
+  // const delay = Math.floor(Math.random() * 5000);
+  // await new Promise(resolve => setTimeout(resolve, delay));
 
   await send_message(`CGV 감시 시작 👀\n\n인원: ${COUNT}\n제목: ${MOVIE_TITLE}\n상영일: ${SCREEN_YMD}\n상영 시각: ${MOVIE_MIN_TIME}~${MOVIE_MAX_TIME}`);
   logger.info(`CGV 감시 시작 인원: ${COUNT}\n제목: ${MOVIE_TITLE}\n상영일: ${SCREEN_YMD}\n상영 시각: ${MOVIE_MIN_TIME}~${MOVIE_MAX_TIME}`);
