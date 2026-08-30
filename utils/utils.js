@@ -1,4 +1,6 @@
 import fs from "fs/promises";
+import { send_message } from "../telegram/telegram.js";
+import logger from "./logger.js";
 
 export async function send_message_and_save_log (text) {
   await send_message(text);
