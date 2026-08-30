@@ -1,5 +1,10 @@
 import fs from "fs/promises";
 
+export async function send_message_and_save_log (text) {
+  await send_message(text);
+  logger.info(text);
+}
+
 export async function update_history(MOVIE_TITLE, SCREEN_YMD) {
   const data = JSON.parse(await fs.readFile("./static/history.json", "utf8"));
 

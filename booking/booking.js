@@ -22,7 +22,7 @@ export async function booking(page, data) {
     const isSuccess = await selectSeats(page);    
     return isSuccess;
   } catch (error) {
-    await send_message('booking.js\n', error);
+    await send_message('booking.js catch\n', error);
     await screenCaptureAndSaveHtml(page);
     logger.error(error);
     return false;

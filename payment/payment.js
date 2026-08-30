@@ -22,26 +22,26 @@ export async function payment (page) {
       await page.waitForTimeout(500);
     }
       
-    let isComplete = false;
+    let isTicketSuccess = false;
     let paymentCode = null;
     if (USE_TICKET) {
-      isComplete = await useTicket(page);
+      isTicketSuccess = await useTicket(page);
     } else {
       paymentCode = await useAppCard(page);
     }
     
     
-    // 영화 관람권을 쓰면 이후 결제 필요 없으니까 isComplete고,
-    // 앱카드 썼으면 수동 결제 필요하니까 isComplete false에 paymentCode return
+    // 영화 관람권을 쓰면 이후 결제 필요 없으니까 isTicketSuccess고,
+    // 앱카드 썼으면 수동 결제 필요하니까 isTicketSuccess false에 paymentCode return
     return {
-      isComplete: isComplete,
+      isTicketSuccess: isTicketSuccess,
       paymentCode: paymentCode
     }
   } catch (error) {
     await send_message("payment 결제 실패");
     logger.error(error) ;
     return {
-      isComplete: false,
+      isTicketSuccess: false,
       paymentCode: null
     }
   }

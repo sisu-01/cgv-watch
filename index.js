@@ -4,19 +4,11 @@ import { checking } from "./checking/checking.js";
 import { booking } from "./booking/booking.js";
 import { payment } from "./payment/payment.js";
 import logger from "./utils/logger.js";
-import { update_history } from "./utils/utils.js";
+import { send_message_and_save_log, update_history } from "./utils/utils.js";
 import { performance } from "node:perf_hooks";
 import { send_message } from "./telegram/telegram.js";
 
-// 로그인 성공 -> 소용돌이 출력까지 너무 느려, loop1 다음까지 느려
-
 logger.info("시작!");
-
-// 종료 이벤트 등록
-// process.on("SIGINT", async () => {
-//   await send_message("🔴 프로그램 종료 (Ctrl+C)");
-//   process.exit(0);
-// });
 
 process.on("SIGTERM", async () => {
   await send_message("🔴 프로그램 종료 (SIGTERM)");
@@ -96,59 +88,70 @@ page.setDefaultNavigationTimeout(150000);
 
 // 테스트용 모든 네트워크 느릐게
 // await page.route('**/*', async route => {
-//   const delay = 2000 + Math.random() * 5000;
-//   await new Promise(resolve => setTimeout(resolve, delay));
-//   await route.continue();
-// });
-
-// 로그인
+  //   const delay = 2000 + Math.random() * 5000;
+  //   await new Promise(resolve => setTimeout(resolve, delay));
+  //   await route.continue();
+  // });
+  
+  // 로그인
+  
 let loginSuccess = true;
 if (!isDev) {
   loginSuccess = await login(page);
 }
 
-if (loginSuccess) {
-  // origin cgv로 하면서 로딩 빠르게
-  await page.goto("https://cgv.co.kr/robots.txt");
-  
-  // 영화 오픈 체크
-  const movieData = await checking(isDev);
-
-  // 좌석 선택
-  const isSuccess = await booking(page, movieData);
-  if (isSuccess) {
-    // 결제 천천히 해도 되니까 999
-    page.setDefaultTimeout(999999999);
-    page.setDefaultNavigationTimeout(999999999);
-    
-    // 결제
-    const { isComplete, paymentCode } = await payment(page);
-  
-    if (isComplete && paymentCode === null) {
-      logger.info(`🎉 예매 성공 영화 관람권`);
-      await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공 및 결제완료\n영화 관람권 써서 다 끝냈다~ 🎟️`);
-    }
-    if (!isComplete && paymentCode !== null) {
-      logger.info(`🎉 예매 성공 ${paymentCode}`);
-
-      // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
-      const interval = setInterval(async () => {
-        await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n결제 코드: ${paymentCode}`);
-      }, 10 * 1000);
-      await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
-      
-      clearInterval(interval);
-    }
-    if (!isComplete && paymentCode === null) {
-      await send_message("😭 index 결제 실패했어요 ㅠㅠㅠ");
-      logger.info("index 결제 실패");
-    }
-  } else {
-    await send_message("😭 booking 좌석 선택 실패했어요 ㅠㅠㅠ");
-    logger.info("booking 좌석 선택 실패");
-  }
-
-  // 오픈 언제 열렸는지 기록
-  // update_history(MOVIE_TITLE, OPEN_YMD);
+// 로그인 안 됐으면 절루 가라~
+if (!loginSuccess) {
+  await send_message_and_save_log("로그인 실패");
+  return;
 }
+
+// origin cgv로 하면서 로딩 빠르게
+await page.goto("https://cgv.co.kr/robots.txt");
+
+// 영화 오픈 체크
+const movieData = await checking(isDev);
+
+// 좌석 선택
+const isSuccess = await booking(page, movieData);
+if (!isSuccess) {
+  await send_message_and_save_log("좌석 선택 실패");
+  return;
+}
+
+// 결제 천천히 해도 되니까 999
+page.setDefaultTimeout(999999999);
+page.setDefaultNavigationTimeout(999999999);
+
+// 결제
+const { isTicketSuccess, paymentCode } = await payment(page);
+
+// 1. 영화 관람권 사용
+// 2. 앱카드 결제
+// 3. 실패
+
+// 1. 영화 관람권 사용
+if (isTicketSuccess && paymentCode === null) {
+  await send_message_and_save_log(`${MOVIE_TITLE} ${SCREEN_YMD} 관람권 사용 성공`);
+}
+
+// 2. 앱카드 결제
+if (!isTicketSuccess && paymentCode !== null) {
+  logger.info(`🎉 예매 성공 ${paymentCode}`);
+
+  // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
+  const interval = setInterval(async () => {
+    await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n결제 코드: ${paymentCode}`);
+  }, 10 * 1000);
+  await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
+  
+  clearInterval(interval);
+}
+
+// 3. 실패
+if (!isTicketSuccess && paymentCode === null) {
+  await send_message_and_save_log("결제 실패");
+}
+// 오픈 언제 열렸는지 기록
+// update_history(MOVIE_TITLE, OPEN_YMD);
 // await browser.close();
