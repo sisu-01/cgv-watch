@@ -123,10 +123,7 @@ if (loginSuccess) {
     
     // 결제
     const { isComplete, paymentCode } = await payment(page);
-    
-    // 오픈 언제 열렸는지 기록
-    update_history(MOVIE_TITLE, OPEN_YMD);
-
+  
     if (isComplete && paymentCode === null) {
       logger.info(`🎉 예매 성공 영화 관람권`);
       await send_message(`🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공 및 결제완료\n영화 관람권 써서 다 끝냈다~ 🎟️`);
@@ -150,5 +147,8 @@ if (loginSuccess) {
     await send_message("😭 booking 좌석 선택 실패했어요 ㅠㅠㅠ");
     logger.info("booking 좌석 선택 실패");
   }
+
+  // 오픈 언제 열렸는지 기록
+  // update_history(MOVIE_TITLE, OPEN_YMD);
 }
 // await browser.close();
