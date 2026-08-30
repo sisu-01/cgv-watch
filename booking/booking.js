@@ -14,18 +14,24 @@ const START_COL = Number(process.env.START_COL);
 const END_COL = Number(process.env.END_COL);
 //좌석 범위 목록들 정가운데서 시계방향으로 회오리~
 // const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
-const TARGET_SEATS = JSON.parse(process.env.SEATS);
+// const TARGET_SEATS = JSON.parse(process.env.SEATS);
+const COL_LIST = process.env.COL_LIST;
+const ROW_LIST = process.env.ROW_LIST;
+let returnSeleactSeats;
 
-export async function booking(page, data) {
+export async function booking(page, data, tabIndex) {
   try {
     await goToBookingPage(page, data);
-    const isSuccess = await selectSeats(page);    
-    return isSuccess;
+    const isSuccess = await selectSeats(page, tabIndex);
+    return {
+      isSuccess,
+      selectedSeats: returnSeleactSeats
+    };
   } catch (error) {
     await send_message('booking.js catch\n', error);
     await screenCaptureAndSaveHtml(page);
     logger.error(error);
-    return false;
+    return false, "";
   }
 }
 
@@ -40,7 +46,7 @@ async function goToBookingPage(page, data) {
       )
     )
   );
-  
+
   // session storage 설정
   const session = {
     query: JSON.stringify(data)
@@ -55,7 +61,14 @@ async function goToBookingPage(page, data) {
   // logger.info("예매 페이지 이동");
 }
 
-async function selectSeats (page) {    
+async function selectSeats (page, tabIndex) {    
+  const rowNumber = JSON.parse(ROW_LIST)[tabIndex];
+  const TARGET_SEATS = [];
+  JSON.parse(COL_LIST).forEach(colString => {
+    TARGET_SEATS.push(`${colString}${rowNumber}`)
+  });
+  // console.log(`탭 ${tabIndex}`, TARGET_SEATS);
+  
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
   // 최대 도전 회수
   let retryCount = 0;
@@ -67,7 +80,7 @@ async function selectSeats (page) {
     // 인원 선택
     const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
     const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
-    await targetButton.waitFor({ state: 'visible' }); 
+    await targetButton.waitFor({ state: 'visible' });
     await targetButton.click();
     await page.locator('button', { hasText: /^선택$/ }).click();
 
@@ -84,6 +97,7 @@ async function selectSeats (page) {
     // 모든 좌석 클릭 가능하게 화면 줄이기
     await waitAndChangeModalTransform(page);
 
+    // 좌석 목록 생성
     const seatMap = new Map(
       await page.locator("button[data-seatlocno]").evaluateAll(buttons =>
         buttons
@@ -156,6 +170,7 @@ async function selectSeats (page) {
           continue;
         }
         // console.log(`✅ 전좌석 선택 완료!`);
+        returnSeleactSeats = selectedSeats.join(",");
         isSeatSelected = true; // 루프 탈출 조건 충족
         isSuccess = true;
       } catch (error) {
@@ -223,6 +238,9 @@ async function selectSeats (page) {
 
     return modal && !modal.classList.contains('active');
   });
+
+  // 결제 전에 멈추기
+  // await new Promise(resolve => setTimeout(resolve, 999999));
   
   await page.getByRole('button', { name: /결제하기$/ }).click();
   await page.getByRole('button', { name: /결제하기$/ }).nth(1).click();
