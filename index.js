@@ -35,7 +35,7 @@ async function main() {
 
   // 브라우저 생성
   const browser = await chromium.launch({
-    headless: false,
+    headless: true,
     args: [
       "--disable-gpu",
       "--disable-dev-shm-usage",
