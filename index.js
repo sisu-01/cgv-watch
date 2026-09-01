@@ -127,7 +127,7 @@ async function main() {
       const { isSuccess, selectedSeats } = await booking(page, movieData, tabIndex);
       if (!isSuccess) {
         await send_message_and_save_log(`${tabName} 좌석 선택 실패`);
-        await browser.close();
+        await page.close();
         return;
       }
       
