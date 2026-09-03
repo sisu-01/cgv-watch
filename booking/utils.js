@@ -102,7 +102,7 @@ export async function isAlreadySelectedModal(page) {
   return false;
 }
 
-export async function screenCaptureAndSaveHtml(page) {
+export async function screenCaptureAndSaveHtml(page, tabIndex = 0) {
   try {
     await fs.mkdir("./debug", { recursive: true });
 
@@ -112,20 +112,18 @@ export async function screenCaptureAndSaveHtml(page) {
 
     // 현재 화면 캡처
     await page.screenshot({
-      path: `./debug/${timestamp}.png`,
+      path: `./debug/TAB-${tabIndex+1}-${timestamp}.png`,
       fullPage: true,
     });
 
     // 현재 HTML 저장
     const html = await page.content();
     await fs.writeFile(
-      `./debug/${timestamp}.html`,
+      `./debug/TAB-${tabIndex+1}-${timestamp}.html`,
       html,
       "utf8"
     );
-
-    console.log(`디버그 파일 저장 완료 (${timestamp})`);
   } catch (err) {
-    console.error("디버그 파일 저장 실패:", err);
+    console.error("스크린샷 실패", err);
   }
 }

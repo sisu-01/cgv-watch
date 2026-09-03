@@ -28,9 +28,8 @@ export async function booking(page, data, tabIndex) {
       selectedSeats: returnSeleactSeats
     };
   } catch (error) {
-    await send_message('booking.js catch\n', error);
-    await screenCaptureAndSaveHtml(page);
-    logger.error(error);
+    await screenCaptureAndSaveHtml(page, tabIndex);
+    logger.error(`탭 ${tabIndex + 1}\n${error}`);
     return false, "";
   }
 }
@@ -174,7 +173,7 @@ async function selectSeats (page, tabIndex) {
         isSeatSelected = true; // 루프 탈출 조건 충족
         isSuccess = true;
       } catch (error) {
-        logger.error(error);
+        logger.error(`탭 ${tabIndex + 1}\n${error}`);
         seatIndex++;
       }
     }
@@ -182,8 +181,8 @@ async function selectSeats (page, tabIndex) {
     
     // 에러 났거나,, 전체 순회했는데도 예매 못 한 경우.. ㅠㅠ
     if (!isSeatSelected) {
-      logger.info("😭 준비한 모든 좌석이 매진되었습니다.");
-      await screenCaptureAndSaveHtml(page);
+      logger.info(`탭 ${tabIndex + 1} 모든 좌석 매진.`);
+      await screenCaptureAndSaveHtml(page, tabIndex);
       return false;
     }
     
@@ -194,7 +193,7 @@ async function selectSeats (page, tabIndex) {
 
     const isAlready = await isAlreadySelectedModal(page);
     if (isAlready) {
-      logger.info(`이선좌 ${retryCount}/20`);
+      logger.info(`탭 ${tabIndex + 1} 이선좌 ${retryCount}/20`);
       const modal = page
         .locator(".cgv-modal")
         .filter({
