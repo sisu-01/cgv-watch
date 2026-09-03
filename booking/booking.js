@@ -181,7 +181,7 @@ async function selectSeats (page, tabIndex) {
     
     // 에러 났거나,, 전체 순회했는데도 예매 못 한 경우.. ㅠㅠ
     if (!isSeatSelected) {
-      logger.info(`탭 ${tabIndex + 1} 모든 좌석 매진.`);
+      logger.info(`탭 ${tabIndex + 1} 모든 좌석 매진 혹은 에러 isSeatSelected false`);
       await screenCaptureAndSaveHtml(page, tabIndex);
       return false;
     }
