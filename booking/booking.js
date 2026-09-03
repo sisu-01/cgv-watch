@@ -17,12 +17,11 @@ const END_COL = Number(process.env.END_COL);
 // const TARGET_SEATS = JSON.parse(process.env.SEATS);
 const COL_LIST = process.env.COL_LIST;
 const ROW_LIST = process.env.ROW_LIST;
-let returnSeleactSeats;
 
 export async function booking(page, data, tabIndex) {
   try {
     await goToBookingPage(page, data);
-    const isSuccess = await selectSeats(page, tabIndex);
+    const { isSuccess, returnSeleactSeats } = await selectSeats(page, tabIndex);
     return {
       isSuccess,
       selectedSeats: returnSeleactSeats
@@ -66,7 +65,7 @@ async function selectSeats (page, tabIndex) {
   JSON.parse(COL_LIST).forEach(colString => {
     TARGET_SEATS.push(`${colString}${rowNumber}`)
   });
-  // console.log(`탭 ${tabIndex}`, TARGET_SEATS);
+  let returnSeleactSeats = "";
   
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
   // 최대 도전 회수
@@ -254,7 +253,6 @@ async function selectSeats (page, tabIndex) {
   await page.waitForFunction(() => {
     // 0: 좌석 선택, 1: 좌석 선택에서 인원 변경, 2: 임직원 번호 입력
     const modal = document.querySelectorAll('.cgv-modal.cgv-bot-modal')[0];
-
     return modal && !modal.classList.contains('active');
   });
 
@@ -263,5 +261,8 @@ async function selectSeats (page, tabIndex) {
   
   await page.getByRole('button', { name: /결제하기$/ }).click();
   await page.getByRole('button', { name: /결제하기$/ }).nth(1).click();
-  return true;
+  return {
+    isSuccess: true,
+    returnSeleactSeats: returnSeleactSeats
+  };
 }
