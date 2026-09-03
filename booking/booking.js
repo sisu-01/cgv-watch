@@ -188,25 +188,45 @@ async function selectSeats (page, tabIndex) {
     
     // 개발용 딜레이
     // await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+
+    // 이선좌 결과 대기
+    const responsePromise = page.waitForResponse(
+      response =>
+        response.url().includes('/api/v1/content/seatTemp/seatTempPrmp') &&
+        response.request().method() === 'POST',
+      { timeout: 15000 }
+    );
     
     await page.getByRole('button').filter({ hasText: /^선택완료$/ }).click();
 
-    const isAlready = await isAlreadySelectedModal(page);
-    if (isAlready) {
+    // 이선좌 결과
+    const response = await responsePromise;
+    const body = await response.json();
+
+    // const isAlready = await isAlreadySelectedModal(page);
+    // if (isAlready) {
+    if (body.statusCode === -1) {
       logger.info(`탭 ${tabIndex + 1} 이선좌 ${retryCount}/20`);
       const modal = page
         .locator(".cgv-modal")
         .filter({
           hasText: "선택하신 좌석은 이미 다른 고객이 예매 중인 좌석입니다",
         });
+      await modal.waitFor({
+        state: "visible",
+        timeout: 30000,
+      });
 
       const confirmButton = modal.getByRole("button", {
         name: "확인",
         exact: true,
       });
+      await confirmButton.waitFor({
+        state: "visible",
+        timeout: 30000,
+      });
 
       await confirmButton.click();
-      // logger.info('이선좌 확인 클릭 완료');
 
       // 해당 이선좌 모달 자체가 DOM에서 제거될 때까지 대기
       await modal.waitFor({ state: "detached" });
@@ -229,8 +249,8 @@ async function selectSeats (page, tabIndex) {
     }
   }
 
-  // searchSiteByPosiStoNo pending 끝나야 예매창 사라지는데,
-  // 사람 몰리면 예매창이 늦게 사라진다.
+  // searchSiteByPosiStoNo pending 끝나야 좌석 선택창 사라지는데,
+  // 사람 몰리면 좌석 선택창이 늦게 사라진다.
   await page.waitForFunction(() => {
     // 0: 좌석 선택, 1: 좌석 선택에서 인원 변경, 2: 임직원 번호 입력
     const modal = document.querySelectorAll('.cgv-modal.cgv-bot-modal')[0];
