@@ -15,8 +15,11 @@ const END_COL = Number(process.env.END_COL);
 //좌석 범위 목록들 정가운데서 시계방향으로 회오리~
 // const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
 // const TARGET_SEATS = JSON.parse(process.env.SEATS);
-const COL_LIST = process.env.COL_LIST;
-const ROW_LIST = process.env.ROW_LIST;
+const ROW_LIST = JSON.parse(process.env.ROW_LIST);
+const COL_LIST = JSON.parse(process.env.COL_LIST);
+const TARGET_SEATS_LIST = ROW_LIST.flatMap(row =>
+  COL_LIST.map(col => row + col)
+);
 
 export async function booking(page, data, tabIndex) {
   try {
@@ -60,11 +63,8 @@ async function goToBookingPage(page, data) {
 }
 
 async function selectSeats (page, tabIndex) {    
-  const rowNumber = JSON.parse(ROW_LIST)[tabIndex];
-  const TARGET_SEATS = [];
-  JSON.parse(COL_LIST).forEach(colString => {
-    TARGET_SEATS.push(`${colString}${rowNumber}`)
-  });
+  // const rowNumber = JSON.parse(ROW_LIST)[tabIndex];
+  const TARGET_SEATS = TARGET_SEATS_LIST[tabIndex];
   let returnSeleactSeats = "";
   
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
@@ -180,7 +180,7 @@ async function selectSeats (page, tabIndex) {
     
     // 에러 났거나,, 전체 순회했는데도 예매 못 한 경우.. ㅠㅠ
     if (!isSeatSelected) {
-      logger.info(`탭 ${tabIndex + 1} 모든 좌석 매진 혹은 에러 isSeatSelected false`);
+      logger.info(`탭 ${tabIndex + 1} isSeatSelected false`);
       await screenCaptureAndSaveHtml(page, tabIndex);
       return false;
     }
