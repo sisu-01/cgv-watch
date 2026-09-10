@@ -117,12 +117,12 @@ export async function screenCaptureAndSaveHtml(page, tabIndex = 0) {
     });
 
     // 현재 HTML 저장
-    const html = await page.content();
-    await fs.writeFile(
-      `./debug/TAB-${tabIndex+1}-${timestamp}.html`,
-      html,
-      "utf8"
-    );
+    // const html = await page.content();
+    // await fs.writeFile(
+    //   `./debug/TAB-${tabIndex+1}-${timestamp}.html`,
+    //   html,
+    //   "utf8"
+    // );
   } catch (err) {
     console.error("스크린샷 실패", err);
   }
