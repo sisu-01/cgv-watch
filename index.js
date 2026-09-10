@@ -119,6 +119,7 @@ async function main() {
 
   // 영화 오픈 체크
   const movieData = await checking(isDev);
+  logger.info("오픈 확인");
   
   await Promise.all(
     pages.map(async (page, tabIndex) => {
