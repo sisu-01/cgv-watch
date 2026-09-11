@@ -3,6 +3,8 @@
 
 # 디버그
 debug
+test-results/
+playwright-report/
 
 # Logs
 logs
