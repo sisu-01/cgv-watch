@@ -11,7 +11,6 @@ export async function update_history(MOVIE_TITLE, SCREEN_YMD) {
   const data = JSON.parse(await fs.readFile("./static/history.json", "utf8"));
 
   const key = `${MOVIE_TITLE}|${SCREEN_YMD}`;
-  const value = get_diff_days(SCREEN_YMD);
   
   data.history[key] = {
     "남은 일수": get_diff_days(SCREEN_YMD),

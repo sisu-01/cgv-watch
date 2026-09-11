@@ -4,8 +4,7 @@ import { checking } from "./checking/checking.js";
 import { booking } from "./booking/booking.js";
 import { payment } from "./payment/payment.js";
 import logger from "./utils/logger.js";
-import { send_message_and_save_log, update_history } from "./utils/utils.js";
-import { performance } from "node:perf_hooks";
+import { send_message_and_save_log } from "./utils/utils.js";
 import { send_message } from "./telegram/telegram.js";
 
 process.on("SIGTERM", async () => {

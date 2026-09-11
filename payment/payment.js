@@ -10,7 +10,7 @@ const CARD = process.env.CARD;
 export async function payment (page) {
   try {
     const controller = new AbortController();
-    const modalWatcher = watchPaymentTimeModal(page, controller.signal);
+    watchPaymentTimeModal(page, controller.signal);
     
     // cgv 결제창
     await page.waitForLoadState('networkidle');
