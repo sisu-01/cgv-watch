@@ -6,6 +6,7 @@ import { payment } from "./payment/payment.js";
 import logger from "./utils/logger.js";
 import { send_message_and_save_log } from "./utils/utils.js";
 import { send_message } from "./telegram/telegram.js";
+import { config } from "./checking/config.js";
 
 process.on("SIGTERM", async () => {
   await send_message("🔴 프로그램 종료 (SIGTERM)");
@@ -117,7 +118,7 @@ async function main() {
   }
 
   // 영화 오픈 체크
-  const movieData = await checking(isDev);
+  const movieData = await checking(config, isDev);
   logger.info("오픈 확인");
   
   await Promise.all(
