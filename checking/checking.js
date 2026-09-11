@@ -2,7 +2,7 @@
 
 import { send_message } from "../telegram/telegram.js";
 import { fetchCgvSchedule } from "./cgv.js";
-import { findEarliestScreening } from "./utils.js"
+import { findEarliestScreening, findEarliestScreeningForTesting } from "./utils.js"
 import 'dotenv/config'
 import logger from "../utils/logger.js"
 
@@ -66,8 +66,8 @@ export async function checking(config, isDev = false, test = false) {
           // logger.info('발견');
           return result;
         }
-        if (test) {
-          return current.includes("\"scnsNo\":\"018\"");
+        if (test && current.includes("\"scnsNo\":\"018\"")) {
+          return findEarliestScreeningForTesting(data.data, SCREENS_NUMBER);
         }
         // send_message("상영관은 열렸지만 선택한 것은 없음.");
         // logger.info("상영관은 열렸지만 선택한 것은 없음.");

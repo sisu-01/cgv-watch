@@ -15,7 +15,6 @@ export function findEarliestScreening(
   const min = toMinutes(MOVIE_MIN_TIME);
   const max = toMinutes(MOVIE_MAX_TIME);
 
-
   return dataList
     .filter(({ movNo, scnsNo, scnsrtTm, scnendTm }) => {
       const start = toMinutes(scnsrtTm);
@@ -26,6 +25,16 @@ export function findEarliestScreening(
         scnsNo === SCREENS_NUMBER &&
         start >= min &&
         end <= max
+      );
+    })
+    .sort((a, b) => toMinutes(a.scnsrtTm) - toMinutes(b.scnsrtTm))[0] ?? null;
+}
+
+export function findEarliestScreeningForTesting(dataList, SCREENS_NUMBER) {
+  return dataList
+    .filter(({ scnsNo }) => {
+      return (
+        scnsNo === SCREENS_NUMBER
       );
     })
     .sort((a, b) => toMinutes(a.scnsrtTm) - toMinutes(b.scnsrtTm))[0] ?? null;

@@ -2,33 +2,23 @@ import 'dotenv/config'
 import { screenCaptureAndSaveHtml, waitAndChangeModalTransform } from './utils.js';
 import logger from "../utils/logger.js"
 
-const GROUP = process.env.GROUP;
-const COUNT = process.env.COUNT;
-// const START_ROW = process.env.START_ROW;
-// const END_ROW = process.env.END_ROW;
-// const START_COL = Number(process.env.START_COL);
-// const END_COL = Number(process.env.END_COL);
-//좌석 범위 목록들 정가운데서 시계방향으로 회오리~
-// const TARGET_SEATS = printSpiralSeats(START_ROW, END_ROW, START_COL, END_COL);
-// const TARGET_SEATS = JSON.parse(process.env.SEATS);
-const ROW_LIST = JSON.parse(process.env.ROW_LIST);
-const COL_LIST = JSON.parse(process.env.COL_LIST);
-const TARGET_SEATS_LIST = ROW_LIST.flatMap(row =>
-  COL_LIST.map(col => row + col)
-);
-
-export async function booking(page, data, tabIndex) {
+export async function booking(page, config, data, tabIndex) {
   try {
     await goToBookingPage(page, data);
-    const { isSuccess, returnSeleactSeats } = await selectSeats(page, tabIndex);
+    const { isSuccess, returnSeleactSeats } = await selectSeats(page, config, tabIndex);
     return {
       isSuccess,
-      selectedSeats: returnSeleactSeats
+      selectedSeats: returnSeleactSeats,
+      testSuccess: true,
     };
   } catch (error) {
     await screenCaptureAndSaveHtml(page, tabIndex);
-    logger.error(`탭 ${tabIndex + 1}\n${error}`);
-    return false, "";
+    logger.error(`탭 ${tabIndex + 1} booking.js error\n${error.stack}`);
+    return {
+      isSuccess: false,
+      selectedSeats: "",
+      testSuccess: false
+    }
   }
 }
 
@@ -58,7 +48,17 @@ async function goToBookingPage(page, data) {
   // logger.info("예매 페이지 이동");
 }
 
-async function selectSeats (page, tabIndex) {    
+async function selectSeats (page, config, tabIndex) {    
+  const {
+    GROUP,
+    COUNT,
+    ROW_LIST,
+    COL_LIST
+  } = config;
+  const TARGET_SEATS_LIST = ROW_LIST.flatMap(row =>
+    COL_LIST.map(col => row + col)
+  );
+
   // const rowNumber = JSON.parse(ROW_LIST)[tabIndex];
   const TARGET_SEATS = TARGET_SEATS_LIST[tabIndex];
   let returnSeleactSeats = "";
@@ -70,7 +70,6 @@ async function selectSeats (page, tabIndex) {
 
   while (retryCount < 20 && !isSuccess) {
     retryCount++;
-
     // 인원 선택
     const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
     const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
@@ -168,7 +167,7 @@ async function selectSeats (page, tabIndex) {
         isSeatSelected = true; // 루프 탈출 조건 충족
         isSuccess = true;
       } catch (error) {
-        logger.error(`탭 ${tabIndex + 1}\n${error}`);
+        logger.error(`탭 ${tabIndex + 1} selectSeats second while error\n${error.stack}`);
         seatIndex++;
       }
     }
