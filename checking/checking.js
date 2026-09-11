@@ -67,7 +67,7 @@ export async function checking(config, isDev = false, test = false) {
           return result;
         }
         if (test) {
-          return true;
+          return current.includes("\"scnsNo\":\"018\"");
         }
         // send_message("상영관은 열렸지만 선택한 것은 없음.");
         // logger.info("상영관은 열렸지만 선택한 것은 없음.");
