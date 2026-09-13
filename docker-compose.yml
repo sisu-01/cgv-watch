@@ -2,8 +2,7 @@ version: "3.9"
 
 services:
   app:
-    image: cgv-watch-app
-    build: .
+    image: ghcr.io/sisu-01/cgv-watch:latest
     restart: unless-stopped
 
     environment:
