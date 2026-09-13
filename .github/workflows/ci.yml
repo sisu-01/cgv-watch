@@ -29,6 +29,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Create .env
+        run: |
+          cat <<'EOF' > .env
+          ${{ secrets.ENV_FILE }}
+          EOF
+
       - name: Test
         run: npm test
 
