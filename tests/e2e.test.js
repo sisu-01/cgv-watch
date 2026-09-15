@@ -36,8 +36,7 @@ test("E2E", async ({ page }) => {
   const booking_config = {
     GROUP: "0",
     COUNT: "4",
-    ROW_LIST: ["16"],
-    COL_LIST: ["H"]
+    TARGET_SEATS: ["H16"]
   }
   const tabIndex = 0;
   const { testSuccess } = await booking(

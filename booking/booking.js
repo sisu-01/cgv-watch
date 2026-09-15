@@ -52,15 +52,9 @@ async function selectSeats (page, config, tabIndex) {
   const {
     GROUP,
     COUNT,
-    ROW_LIST,
-    COL_LIST
+    TARGET_SEATS,
   } = config;
-  const TARGET_SEATS_LIST = ROW_LIST.flatMap(row =>
-    COL_LIST.map(col => row + col)
-  );
 
-  // const rowNumber = JSON.parse(ROW_LIST)[tabIndex];
-  const TARGET_SEATS = TARGET_SEATS_LIST[tabIndex];
   let returnSeleactSeats = "";
   
   // 이선좌 뜨면 첨부터 ㅠㅠㅠ 이선좌: 이미 선택된 좌석입니다.
@@ -114,19 +108,19 @@ async function selectSeats (page, config, tabIndex) {
         
         // 0. 좌석 존재 여부 확인
         if (!seatInfo) {
-          // console.log(`❌ ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
+          // console.log(`❌ 탭 ${tabIndex + 1} ${currentSeatName} 좌석은 존재하지 않습니다. 다음 좌석으로 넘어갑니다.`);
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }
         // 1. 내가 선택한 좌석이면 pass
         if (seatInfo.title === '선택됨') {
-          // console.log(`⚠️ ${currentSeatName}: 이미 선택됨.`);
+          // console.log(`⚠️ 탭 ${tabIndex + 1} ${currentSeatName}: 이미 선택됨.`);
           seatIndex++;
           continue;
         }
         // 2. 만약 이미 선택된 좌석(disabled)이라면 바로 pass
         if (seatInfo.disabled) {
-          // console.log(`❌ ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
+          // console.log(`❌ 탭 ${tabIndex + 1} ${currentSeatName} 좌석은 이미 매진되었습니다. 다음 좌석으로 넘어갑니다.`);
           seatIndex++; // 다음 좌석 인덱스로
           continue;
         }

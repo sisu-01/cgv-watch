@@ -7,7 +7,7 @@ import logger from "./utils/logger.js";
 import { send_message_and_save_log } from "./utils/utils.js";
 import { send_message } from "./telegram/telegram.js";
 import { config as checkingConfig } from "./checking/config.js";
-import { config as bookingConfig } from "./booking/config.js";
+import { getBookingConfig } from "./booking/config.js";
 
 process.on("SIGTERM", async () => {
   await send_message("🔴 프로그램 종료 (SIGTERM)");
@@ -108,7 +108,7 @@ async function main() {
   const readyUrl = "https://cgv.co.kr/robots.txt";
   await firstPage.goto(readyUrl);
 
-  // 1. 탭 4개 미리 생성 및 페이지 이동
+  // 1. 탭 n개 미리 생성 및 페이지 이동
   const pages = [firstPage]; // 첫 번째 탭 포함
   for (let i = 1; i < TABS_NUMBER; i++) {
     const page = await context.newPage(); // 로그인 쿠키가 공유된 새 탭 열기
@@ -126,6 +126,7 @@ async function main() {
     pages.map(async (page, tabIndex) => {
       const tabName = `탭 ${tabIndex + 1}`;
       // 좌석 선택
+      const bookingConfig = getBookingConfig(tabIndex);
       const { isSuccess, selectedSeats } = await booking(page, bookingConfig, movieData, tabIndex);
       if (!isSuccess) {
         await send_message_and_save_log(`${tabName} 좌석 선택 실패`);

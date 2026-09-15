@@ -2,12 +2,20 @@
 
 import "dotenv/config";
 
-export const config = {
+const seatLists = [
+  JSON.parse(process.env.MIDDLE_SEAT_LIST),
+  JSON.parse(process.env.LEFT_SEAT_LIST),
+  JSON.parse(process.env.RIGHT_SEAT_LIST),
+];
+
+export const getBookingConfig = (seatType) => ({
   GROUP: process.env.GROUP,
   COUNT: process.env.COUNT,
-  ROW_LIST: JSON.parse(process.env.ROW_LIST),
-  COL_LIST: JSON.parse(process.env.COL_LIST)
-}
+  TARGET_SEATS: seatLists[seatType],
+});
+
+// ROW_LIST: JSON.parse(process.env.ROW_LIST)
+// COL_LIST: JSON.parse(process.env.COL_LIST)
 
 // const START_ROW = process.env.START_ROW;
 // const END_ROW = process.env.END_ROW;
