@@ -29,6 +29,7 @@ const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const MOVIE_TITLE = process.env.MOVIE_TITLE;
 const SCREEN_YMD = process.env.SCREEN_YMD;
 const TABS_NUMBER = process.env.TABS_NUMBER;
+const USER_ID = process.env.id;
 // const OPEN_YMD = process.env.OPEN_YMD;
 
 async function main() {
@@ -129,7 +130,7 @@ async function main() {
       const bookingConfig = getBookingConfig(tabIndex);
       const { isSuccess, selectedSeats } = await booking(page, bookingConfig, movieData, tabIndex);
       if (!isSuccess) {
-        await send_message_and_save_log(`${tabName} 좌석 선택 실패`);
+        await send_message_and_save_log(`${USER_ID}\n${tabName} 좌석 선택 실패`);
         await page.close();
         return;
       }
@@ -147,7 +148,7 @@ async function main() {
       
       // 1. 영화 관람권 사용
       if (isTicketSuccess && paymentCode === null) {
-        await send_message_and_save_log(`${tabName} ${MOVIE_TITLE} ${SCREEN_YMD} ${selectedSeats} 관람권 사용 성공`);
+        await send_message_and_save_log(`${USER_ID}\n${tabName} ${MOVIE_TITLE} ${SCREEN_YMD} ${selectedSeats} 관람권 사용 성공`);
       }
       
       // 2. 앱카드 결제
@@ -156,7 +157,7 @@ async function main() {
       
         // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
         const interval = setInterval(async () => {
-          await send_message(`${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n결제 코드: ${paymentCode}`);
+          await send_message(`${USER_ID}\n${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n결제 코드: ${paymentCode}`);
         }, 10 * 1000);
         await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
         
