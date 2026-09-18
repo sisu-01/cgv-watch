@@ -45,6 +45,7 @@ export async function checking(config, isDev = false, test = false) {
     try {
       const data = await fetchCgvSchedule(BASE_URL);
       if (!data || !Array.isArray(data.data)) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
         continue;
       }
       const current = JSON.stringify(data.data);
