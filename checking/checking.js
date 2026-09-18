@@ -85,7 +85,7 @@ export async function checking(config, isDev = false, test = false) {
         logger.info(`${MOVIE_TITLE} ${SCREEN_YMD} 감시 정상 동작 중`);
         lastHeartbeatDate = today;
       }
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 5000));
     } catch (error) {
       send_message('checking.js\n', error);
       logger.error(error);
