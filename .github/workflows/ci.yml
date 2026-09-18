@@ -68,6 +68,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          platforms: linux/arm64
           push: true
           tags: |
             ghcr.io/sisu-01/cgv-watch:latest
