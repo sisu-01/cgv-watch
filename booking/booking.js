@@ -13,7 +13,7 @@ export async function booking(page, config, data, tabIndex) {
     };
   } catch (error) {
     await screenCaptureAndSaveHtml(page, tabIndex);
-    logger.error(`탭 ${tabIndex + 1} booking.js error\n${error.stack}`);
+    logger.error(`탭 ${tabIndex + 1} booking.js error: ${error}\n${error.stack}`);
     return {
       isSuccess: false,
       selectedSeats: "",
@@ -62,20 +62,21 @@ async function selectSeats (page, config, tabIndex) {
   let retryCount = 0;
   let isSuccess = false;
 
+  // 인원 선택
+  const generalSection = page.locator('div:not(.modal-content) > div[aria-labelledby="number-choice-label"]').nth(GROUP);
+  const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
+  await targetButton.waitFor({ state: 'visible' });
+  await targetButton.click();
+  await page.locator('button', { hasText: /^선택$/ }).click();
+
+  // 속도 타협 x
+  // const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
+  // const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
+  // await targetButton.evaluate(el => el.click());
+  // await page.locator('button', { hasText: /^선택$/ }).evaluate(el => el.click());
+
   while (retryCount < 20 && !isSuccess) {
     retryCount++;
-    // 인원 선택
-    const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
-    const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
-    await targetButton.waitFor({ state: 'visible' });
-    await targetButton.click();
-    await page.locator('button', { hasText: /^선택$/ }).click();
-
-    // 속도 타협 x
-    // const generalSection = page.locator('div[aria-labelledby="number-choice-label"]').nth(GROUP);
-    // const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
-    // await targetButton.evaluate(el => el.click());
-    // await page.locator('button', { hasText: /^선택$/ }).evaluate(el => el.click());
 
     // 좌석 선택
     let seatIndex = 0;
@@ -175,7 +176,9 @@ async function selectSeats (page, config, tabIndex) {
     }
     
     // 개발용 딜레이
-    // await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+    // console.log(returnSeleactSeats);
+    // console.log("선택 10초 전");
+    // await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 
     // 이선좌 결과 대기
     const responsePromise = page.waitForResponse(
@@ -222,13 +225,18 @@ async function selectSeats (page, config, tabIndex) {
 
       // searchSiteByPosiStoNo pending 끝나야 예매창 사라지는데,
       // 사람 몰리면 예매창이 늦게 사라진다.
-      await page.waitForFunction(() => {
-        // 0: 좌석 선택, 1: 좌석 선택에서 인원 변경, 2: 임직원 번호 입력
-        const modal = document.querySelectorAll('.cgv-modal.cgv-bot-modal')[0];
-
-        return modal && !modal.classList.contains('active');
-      });
-      // logger.info('좌석 선택 모달 inactive');
+      // 2026.10.01 이선좌 떴는데도 좌석 예매 창 안 사라진다. 버그인가? 일단 주석
+      // await page.waitForFunction(() => {
+      //   // 0: 좌석 선택, 1: 좌석 선택에서 인원 변경, 2: 임직원 번호 입력
+      //   const modal = document.querySelectorAll('.cgv-modal.cgv-bot-modal')[0];
+      //   return modal && !modal.classList.contains('active');
+      // });
+      await page.getByRole('button', { name: '인원변경' }).click();
+      const generalSection = page.locator('.modal-content > div[aria-labelledby="number-choice-label"]').nth(GROUP);
+      const targetButton = generalSection.locator(`button[aria-label="${COUNT} 선택"]`);
+      await targetButton.waitFor({ state: 'visible' });
+      await targetButton.click();
+      await page.getByRole('button', { name: /인원선택/ }).click();
 
       isSuccess = false;
       continue;
