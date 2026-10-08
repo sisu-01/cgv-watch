@@ -31,6 +31,7 @@ process.on("unhandledRejection", async (reason) => {
 });
 
 // isDev: 개발 할 때 미리 설정해놓은 쿠키 로그인 및 checking 무조건 걸림
+const VERSION = process.env.VERSION;
 const isDev = process.argv.includes("--dev") || process.env.IS_DEV === "true";
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
@@ -41,7 +42,7 @@ const USER_ID = process.env.id;
 // const OPEN_YMD = process.env.OPEN_YMD;
 
 async function main() {
-  logger.info("시작!");
+  await send_message_and_save_log(`${VERSION} 시작`);
 
   // 브라우저 생성
   const browser = await chromium.launch({
