@@ -14,11 +14,19 @@ process.on("SIGTERM", async () => {
   process.exit(0);
 });
 process.on("uncaughtException", async (err) => {
-  await send_message(`❌ 치명적인 오류\n${err.stack}`);
+  const message = err instanceof Error
+    ? `${err.message}\n\n${err.stack}`
+    : String(err);
+  await send_message(`❌ 치명적인 오류\n\n${message}`);
+  logger.error(message);
   process.exit(1);
 });
 process.on("unhandledRejection", async (reason) => {
-  await send_message(`❌ Promise 오류\n${reason}`);
+  const message = reason instanceof Error
+    ? `${reason.message}\n\n${reason.stack}`
+    : String(reason);
+  await send_message(`❌ Promise 오류\n\n${message}`);
+  logger.error(message);
   process.exit(1);
 });
 
