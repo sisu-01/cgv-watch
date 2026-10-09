@@ -8,27 +8,7 @@ import { send_message_and_save_log } from "./utils/utils.js";
 import { send_message } from "./telegram/telegram.js";
 import { config as checkingConfig } from "./checking/config.js";
 import { getBookingConfig } from "./booking/config.js";
-
-process.on("SIGTERM", async () => {
-  await send_message("🔴 프로그램 종료 (SIGTERM)");
-  process.exit(0);
-});
-process.on("uncaughtException", async (err) => {
-  const message = err instanceof Error
-    ? `${err.message}\n\n${err.stack}`
-    : String(err);
-  await send_message(`❌ 치명적인 오류\n\n${message}`);
-  logger.error(message);
-  process.exit(1);
-});
-process.on("unhandledRejection", async (reason) => {
-  const message = reason instanceof Error
-    ? `${reason.message}\n\n${reason.stack}`
-    : String(reason);
-  await send_message(`❌ Promise 오류\n\n${message}`);
-  logger.error(message);
-  process.exit(1);
-});
+import { screenCaptureAndSaveHtml } from "./booking/utils.js";
 
 // isDev: 개발 할 때 미리 설정해놓은 쿠키 로그인 및 checking 무조건 걸림
 const VERSION = process.env.VERSION;
@@ -41,11 +21,56 @@ const TABS_NUMBER = process.env.TABS_NUMBER;
 const USER_ID = process.env.id;
 // const OPEN_YMD = process.env.OPEN_YMD;
 
+let browser;
+let pages = [];
+
+// 일부로 에러
+// setTimeout(() => {
+//   Promise.reject(new Error("🧪 의도적인 Promise 오류 테스트"));
+// }, 1000);
+
+process.on("SIGTERM", async () => {
+  await send_message("🔴 프로그램 종료 (SIGTERM)");
+  process.exit(0);
+});
+process.on("uncaughtException", async (err) => {
+  const message = err instanceof Error
+    ? `${err.message}\n\n${err.stack}`
+    : String(err);
+  await send_message(`❌ 치명적인 오류\n\n${message}`);
+  logger.error(message);
+
+  await Promise.all(
+    pages.map(async (page, index) => {
+      if (page.isClosed()) return;
+      await screenCaptureAndSaveHtml(page, index);
+    })
+  );
+
+  process.exit(1);
+});
+process.on("unhandledRejection", async (reason) => {
+  const message = reason instanceof Error
+    ? `${reason.message}\n\n${reason.stack}`
+    : String(reason);
+  await send_message(`❌ Promise 오류\n\n${message}`);
+  logger.error(message);
+
+  await Promise.all(
+    pages.map(async (page, index) => {
+      if (page.isClosed()) return;
+      await screenCaptureAndSaveHtml(page, index);
+    })
+  );
+
+  process.exit(1);
+});
+
 async function main() {
   await send_message_and_save_log(`${VERSION} 시작`);
 
   // 브라우저 생성
-  const browser = await chromium.launch({
+  browser = await chromium.launch({
     headless: true,
     args: [
       "--disable-gpu",
@@ -119,7 +144,7 @@ async function main() {
   await firstPage.goto(readyUrl);
 
   // 1. 탭 n개 미리 생성 및 페이지 이동
-  const pages = [firstPage]; // 첫 번째 탭 포함
+  pages = [firstPage]; // 첫 번째 탭 포함
   for (let i = 1; i < TABS_NUMBER; i++) {
     const page = await context.newPage(); // 로그인 쿠키가 공유된 새 탭 열기
     await page.goto(readyUrl);           // 작업 페이지로 이동
