@@ -16,6 +16,6 @@ XVFB_PID=$!
 # X 서버가 뜰 때까지 잠깐 대기
 sleep 2
 
-echo "Starting node..."
+echo "Starting subscriber..."
 
-exec node index.js
+exec node subscriber.js

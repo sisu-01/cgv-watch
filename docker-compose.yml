@@ -1,14 +1,38 @@
-version: "3.9"
-
 services:
-  app:
+  server:
     image: ghcr.io/sisu-01/cgv-watch:latest
     restart: unless-stopped
+    command: ["node", "server.js"]
+
+    environment:
+      TZ: Asia/Seoul
+
+  publisher:
+    image: ghcr.io/sisu-01/cgv-watch:latest
+    restart: unless-stopped
+    command: ["node", "opener.js"]
 
     environment:
       TZ: Asia/Seoul
       SCREEN_YMD: ${SCREEN_YMD}
-      IS_DEV: ${IS_DEV:-false}   # 기본값 false
+      IS_DEV: ${IS_DEV:-false}
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./logs/${SCREEN_YMD}:/app/logs
+      - ./debug/${SCREEN_YMD}:/app/debug
+
+  subscriber:
+    image: ghcr.io/sisu-01/cgv-watch:latest
+    restart: unless-stopped
+    command: ["./start.sh"]
+
+    environment:
+      TZ: Asia/Seoul
+      SCREEN_YMD: ${SCREEN_YMD}
+      IS_DEV: ${IS_DEV:-false}
 
     env_file:
       - .env
