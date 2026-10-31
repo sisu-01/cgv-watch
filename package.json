@@ -18,8 +18,8 @@
     "lint": "eslint .",
     "test": "playwright test",
     "ws:server": "node server.js",
-    "ws:publisher": "node ws-publisher.js",
-    "ws:subscriber": "node ws-subscriber.js"
+    "ws:publisher": "node opener.js",
+    "ws:subscriber": "node subscriber.js"
   },
   "dependencies": {
     "axios": "^1.18.1",
