@@ -5,7 +5,9 @@ import "dotenv/config";
 export const config = {
   COUNT: process.env.COUNT,
   MOVIE_TITLE: process.env.MOVIE_TITLE,
-  MOVIE_NUMBER: process.env.MOVIE_NUMBER,
+  MOVIE_NUMBER: process.env.MOVIE_NUMBER === "null"
+    ? null
+    : process.env.MOVIE_NUMBER,
   SCREENS_NUMBER: process.env.SCREENS_NUMBER,
   MOVIE_MIN_TIME: process.env.MOVIE_MIN_TIME,
   MOVIE_MAX_TIME: process.env.MOVIE_MAX_TIME,
