@@ -10,7 +10,7 @@ services:
   publisher:
     image: ghcr.io/sisu-01/cgv-watch:latest
     restart: unless-stopped
-    command: ["node", "opener.js"]
+    command: ["node", "publisher.js"]
 
     environment:
       TZ: Asia/Seoul
