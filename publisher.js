@@ -7,6 +7,7 @@ import { createSocketClient } from "./socket/client.js";
 import logger from "./utils/logger.js";
 
 const isDev = process.argv.includes("--dev");
+let keepAliveTimer = null;
 
 const client = createSocketClient({
   role: "publisher",
@@ -43,7 +44,6 @@ function waitForAck(timeoutMs = 10000) {
 
 async function main() {
   logger.info("오픈 확인 클라이언트 시작");
-  let keepAliveTimer = null;
   
   // 중앙 서버 연결 대기
   await client.waitUntilReady();
@@ -70,28 +70,39 @@ async function main() {
 
   // 중앙 서버로 결과 전달
   client.publishOpenEvent(payload);
-
+  
   const ack = await ackPromise;
-
+  
   logger.info(
     `오픈 이벤트 전달 완료: ${ack.deliveredCount}개 클라이언트`
   );
-
+  
   if (ack.deliveredCount === 0) {
     logger.warn("연결된 subscriber가 없습니다.");
   }
-
+  
   client.close();
-
+  
   logger.info("오픈 이벤트 처리 완료. 종료 명령까지 대기합니다.");
   // Node.js 프로세스가 종료되지 않도록 유지
   keepAliveTimer = setInterval(() => {}, 60_000);
 }
 
-process.on("SIGINT", () => {
+function shutdown(exitCode = 0) {
+  logger.info("종료 신호 수신. 프로그램을 종료합니다.");
+
+  if (keepAliveTimer) {
+    clearInterval(keepAliveTimer);
+    keepAliveTimer = null;
+  }
+
   client.close();
-  process.exit(130);
-});
+  process.exit(exitCode);
+}
+
+
+process.on("SIGINT", () => shutdown(130));
+process.on("SIGTERM", () => shutdown(0));
 
 main().catch((error) => {
   logger.error(`OPENER ERROR: ${error.stack || error}`);
