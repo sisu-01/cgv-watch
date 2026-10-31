@@ -17,6 +17,8 @@
   "scripts": {
     "lint": "eslint .",
     "test": "playwright test",
+    "dev": "node index.js --dev",
+    "start": "node index.js",
     "ws:server": "node server.js",
     "ws:publisher": "node publisher.js",
     "ws:subscriber": "node subscriber.js"
