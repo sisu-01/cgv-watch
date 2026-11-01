@@ -160,11 +160,12 @@ async function main() {
         // 2. 앱카드 결제
         if (!isTicketSuccess && paymentCode !== null) {
           logger.info(`${tabName} 🎉 예매 성공 ${paymentCode}`);
+          const seatMapUrl = `https://sisu-01.github.io/cgv-watch/#${selectedSeats}`;
+          await send_message(`${ID}\n${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n${seatMapUrl}\n결제 코드: ${paymentCode}`, paymentCode.replace(/-/g, ''));
         
           // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
           const interval = setInterval(async () => {
-            const seatMapUrl = `https://sisu-01.github.io/cgv-watch/#${selectedSeats}`;
-            await send_message(`${ID}\n${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n${seatMapUrl}\n결제 코드: ${paymentCode}`, paymentCode.replace(/-/g, ''));
+            await send_message("일어나세요");
           }, 10 * 1000);
           await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
           
