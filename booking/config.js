@@ -8,10 +8,17 @@ const seatLists = [
   JSON.parse(process.env.RIGHT_SEAT_LIST),
 ];
 
+const splitSeats = (seats, total, me) => {
+  return seats.filter((_, index) => {
+    const groupIndex = Math.floor(index / 2);
+    return groupIndex % total === me - 1;
+  });
+}
+
 export const getBookingConfig = (seatType) => ({
   GROUP: process.env.GROUP,
   COUNT: process.env.COUNT,
-  TARGET_SEATS: seatLists[seatType],
+  TARGET_SEATS: splitSeats(seatLists[seatType], process.env.CLIENT_TOTAL, process.env.CLIENT_NUMBER),
 });
 
 // ROW_LIST: JSON.parse(process.env.ROW_LIST)
