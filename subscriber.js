@@ -20,7 +20,7 @@ const MOVIE_TITLE = process.env.MOVIE_TITLE;
 const SCREEN_YMD = process.env.SCREEN_YMD;
 const TABS_NUMBER = Number(process.env.TABS_NUMBER);
 const CLIENT_TOTAL = Number(process.env.CLIENT_TOTAL);
-const CLIENT_NUMBER = Number(process.argv[2])-1;// || Number(process.env.CLIENT_NUMBER);
+const CLIENT_NUMBER = Number(process.argv[2])-1 || Number(process.env.CLIENT_NUMBER)-1;
 const ID = JSON.parse(process.env.ID)[CLIENT_NUMBER];
 const PW = JSON.parse(process.env.PW)[CLIENT_NUMBER];
 
@@ -31,7 +31,7 @@ let bookingConfigs = [];
 async function main() {
   // 브라우저 생성
   browser = await chromium.launch({
-    headless: false,
+    headless: true,
     args: [
       "--disable-gpu",
       "--disable-dev-shm-usage",
@@ -197,7 +197,7 @@ async function main() {
     process.exit(0);
   });
   
-  send_message_and_save_log(`${VERSION} Subscriber 실행 중`);
+  send_message_and_save_log(`${VERSION} ${ID}\nSubscriber 실행 중`);
   await client.waitUntilReady();
 }
 
