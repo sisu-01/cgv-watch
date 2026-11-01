@@ -1,13 +1,16 @@
+// index.js
+import "dotenv/config";
+
 import { chromium } from "playwright";
 import { login } from "./login/login.js";
+import { config as checkingConfig } from "./checking/config.js";
 import { checking } from "./checking/checking.js";
+import { getBookingConfig } from "./booking/config.js";
 import { booking } from "./booking/booking.js";
 import { payment } from "./payment/payment.js";
 import logger from "./utils/logger.js";
 import { send_message_and_save_log } from "./utils/utils.js";
 import { send_message } from "./telegram/telegram.js";
-import { config as checkingConfig } from "./checking/config.js";
-import { getBookingConfig } from "./booking/config.js";
 import { screenCaptureAndSaveHtml } from "./booking/utils.js";
 
 // isDev: 개발 할 때 미리 설정해놓은 쿠키 로그인 및 checking 무조건 걸림
@@ -17,13 +20,15 @@ const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const MOVIE_TITLE = process.env.MOVIE_TITLE;
 const SCREEN_YMD = process.env.SCREEN_YMD;
-const TABS_NUMBER = process.env.TABS_NUMBER;
-const CLIENT_NUMBER = Number(process.env.CLIENT_NUMBER);
+const TABS_NUMBER = Number(process.env.TABS_NUMBER);
+const CLIENT_TOTAL = Number(process.env.CLIENT_TOTAL);
+const CLIENT_NUMBER = Number(process.argv[2]) || Number(process.env.CLIENT_NUMBER);
 const ID = JSON.parse(process.env.ID)[CLIENT_NUMBER];
 const PW = JSON.parse(process.env.PW)[CLIENT_NUMBER];
 
 let browser;
 let pages = [];
+let bookingConfigs = [];
 
 // 일부로 에러
 // setTimeout(() => {
@@ -146,12 +151,17 @@ async function main() {
 
   // 1. 탭 n개 미리 생성 및 페이지 이동
   pages = [firstPage]; // 첫 번째 탭 포함
-  for (let i = 1; i < TABS_NUMBER; i++) {
+  for (let i=1; i < TABS_NUMBER; i++) {
     const page = await context.newPage(); // 로그인 쿠키가 공유된 새 탭 열기
     await page.goto(readyUrl);           // 작업 페이지로 이동
     page.setDefaultTimeout(150000);
     page.setDefaultNavigationTimeout(150000);
     pages.push(page);
+  }
+  for (let i=0; i<TABS_NUMBER; i++) {
+    bookingConfigs.push(
+      getBookingConfig(i, CLIENT_TOTAL, CLIENT_NUMBER)
+    );
   }
 
   // 영화 오픈 체크
@@ -162,8 +172,7 @@ async function main() {
     pages.map(async (page, tabIndex) => {
       const tabName = `탭 ${tabIndex + 1}`;
       // 좌석 선택
-      const bookingConfig = getBookingConfig(tabIndex);
-      const { isSuccess, selectedSeats } = await booking(page, bookingConfig, movieData, tabIndex);
+      const { isSuccess, selectedSeats } = await booking(page, bookingConfigs[tabIndex], movieData, tabIndex);
       if (!isSuccess) {
         await send_message_and_save_log(`${ID}\n${tabName} 좌석 선택 실패`);
         await page.close();

@@ -15,10 +15,10 @@ const splitSeats = (seats, total, me) => {
   });
 }
 
-export const getBookingConfig = (seatType) => ({
+export const getBookingConfig = (seatType, clientTotal, clientNumber) => ({
   GROUP: process.env.GROUP,
   COUNT: process.env.COUNT,
-  TARGET_SEATS: splitSeats(seatLists[seatType], process.env.CLIENT_TOTAL, process.env.CLIENT_NUMBER),
+  TARGET_SEATS: splitSeats(seatLists[seatType], clientTotal, clientNumber),
 });
 
 // ROW_LIST: JSON.parse(process.env.ROW_LIST)

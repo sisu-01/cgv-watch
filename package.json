@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "test": "playwright test",
     "chrome": "node chrome.js --dev",
-    "dev": "node index.js --dev",
+    "dev": "node index.js 1 --dev",
     "start": "node index.js",
     "ws:server": "node server.js",
     "ws:publisher": "node publisher.js",
