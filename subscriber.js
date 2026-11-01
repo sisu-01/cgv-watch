@@ -20,7 +20,7 @@ const MOVIE_TITLE = process.env.MOVIE_TITLE;
 const SCREEN_YMD = process.env.SCREEN_YMD;
 const TABS_NUMBER = Number(process.env.TABS_NUMBER);
 const CLIENT_TOTAL = Number(process.env.CLIENT_TOTAL);
-const CLIENT_NUMBER = Number(process.argv[2]) || Number(process.env.CLIENT_NUMBER);
+const CLIENT_NUMBER = Number(process.argv[2])-1;// || Number(process.env.CLIENT_NUMBER);
 const ID = JSON.parse(process.env.ID)[CLIENT_NUMBER];
 const PW = JSON.parse(process.env.PW)[CLIENT_NUMBER];
 

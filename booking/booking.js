@@ -54,6 +54,14 @@ async function selectSeats (page, config, tabIndex) {
     COUNT,
     TARGET_SEATS,
   } = config;
+  if (TARGET_SEATS.length === 0) {
+    logger.error(`탭 ${tabIndex + 1} TARGET_SEATS is empty.`);
+    return {
+      isSuccess: false,
+      selectedSeats: "",
+      testSuccess: false
+    }
+  }
 
   let returnSeleactSeats = "";
   

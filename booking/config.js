@@ -11,7 +11,7 @@ const seatLists = [
 const splitSeats = (seats, total, me) => {
   return seats.filter((_, index) => {
     const groupIndex = Math.floor(index / 2);
-    return groupIndex % total === me - 1;
+    return groupIndex % total === me;
   });
 }
 
