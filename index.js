@@ -202,7 +202,7 @@ async function main() {
         // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
         const interval = setInterval(async () => {
           const seatMapUrl = `https://sisu-01.github.io/cgv-watch/#${selectedSeats}`;
-          await send_message(`${ID}\n${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n${seatMapUrl}\n결제 코드: ${paymentCode}`);
+          await send_message(`${ID}\n${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n${seatMapUrl}\n결제 코드: ${paymentCode}`, paymentCode.replace(/-/g, ''));
         }, 10 * 1000);
         await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
         

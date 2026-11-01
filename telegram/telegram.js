@@ -5,13 +5,28 @@ const TELEGRAM = {
   CHAT_ID: process.env.TELEGRAM_CHAT_ID
 }
 
-export async function send_message(message) {
+export async function send_message(message, paymentCode=null) {
   const url = `https://api.telegram.org/bot${TELEGRAM.BOT_TOKEN}/sendMessage`;
-  const body = new URLSearchParams({
+  const payload = {
     chat_id: TELEGRAM.CHAT_ID,
     text: message,
     disable_web_page_preview: "true"
-  });
+  };
+
+  if (paymentCode) {
+    payload.reply_markup = JSON.stringify({
+      inline_keyboard: [
+        [
+          {
+            text: "📋 결제 코드 복사",
+            copy_text: { text: paymentCode }
+          }
+        ]
+      ]
+    });
+  }
+
+  const body = new URLSearchParams(payload);
 
   try {
     const response = await fetch(url, { method: "POST", body });
