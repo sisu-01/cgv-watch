@@ -5,7 +5,7 @@ import logger from "../utils/logger.js"
 
 let offset = initOffset();
 
-export async function login(page) {
+export async function login(page, id, pw) {
   try {
     // 로그인창으로 이동
     await page.goto("https://cgv.co.kr/mem/login");
@@ -14,8 +14,8 @@ export async function login(page) {
     await page.waitForLoadState("networkidle");
   
     // id,pw 입력
-    await page.locator("#loginInput1").fill(process.env.id);
-    await page.locator("#loginInput2").fill(process.env.pw);
+    await page.locator("#loginInput1").fill(id);
+    await page.locator("#loginInput2").fill(pw);
   
     // 캡챠 될 때 까지 뺑뺑이
     while (true) {

@@ -18,8 +18,9 @@ const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const MOVIE_TITLE = process.env.MOVIE_TITLE;
 const SCREEN_YMD = process.env.SCREEN_YMD;
 const TABS_NUMBER = process.env.TABS_NUMBER;
-const USER_ID = process.env.id;
-// const OPEN_YMD = process.env.OPEN_YMD;
+const CLIENT_NUMBER = Number(process.env.CLIENT_NUMBER);
+const ID = JSON.parse(process.env.ID)[CLIENT_NUMBER];
+const PW = JSON.parse(process.env.PW)[CLIENT_NUMBER];
 
 let browser;
 let pages = [];
@@ -130,7 +131,7 @@ async function main() {
   // 로그인
   let loginSuccess = true;
   if (!isDev) {
-    loginSuccess = await login(firstPage);
+    loginSuccess = await login(firstPage, ID, PW);
   }
   
   // 로그인 안 됐으면 절루 가라~
@@ -164,7 +165,7 @@ async function main() {
       const bookingConfig = getBookingConfig(tabIndex);
       const { isSuccess, selectedSeats } = await booking(page, bookingConfig, movieData, tabIndex);
       if (!isSuccess) {
-        await send_message_and_save_log(`${USER_ID}\n${tabName} 좌석 선택 실패`);
+        await send_message_and_save_log(`${ID}\n${tabName} 좌석 선택 실패`);
         await page.close();
         return;
       }
@@ -182,7 +183,7 @@ async function main() {
       
       // 1. 영화 관람권 사용
       if (isTicketSuccess && paymentCode === null) {
-        await send_message_and_save_log(`${USER_ID}\n${tabName} ${MOVIE_TITLE} ${SCREEN_YMD} ${selectedSeats} 관람권 사용 성공`);
+        await send_message_and_save_log(`${ID}\n${tabName} ${MOVIE_TITLE} ${SCREEN_YMD} ${selectedSeats} 관람권 사용 성공`);
       }
       
       // 2. 앱카드 결제
@@ -192,7 +193,7 @@ async function main() {
         // 결제창 10분 동안 브라우저 유지 및 결제 코드 계속 전송
         const interval = setInterval(async () => {
           const seatMapUrl = `https://sisu-01.github.io/cgv-watch/#${selectedSeats}`;
-          await send_message(`${USER_ID}\n${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n${seatMapUrl}\n결제 코드: ${paymentCode}`);
+          await send_message(`${ID}\n${tabName} ${selectedSeats}\n 🎉 ${MOVIE_TITLE} ${SCREEN_YMD} 예매 성공\n${seatMapUrl}\n결제 코드: ${paymentCode}`);
         }, 10 * 1000);
         await new Promise(resolve => setTimeout(resolve, 10 * 60 * 1000));
         
