@@ -18,4 +18,4 @@ sleep 2
 
 echo "Starting subscriber..."
 
-exec node subscriber.js
+exec npm run start

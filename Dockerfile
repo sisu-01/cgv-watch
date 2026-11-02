@@ -17,5 +17,3 @@ RUN mkdir -p /app/logs
 RUN chmod +x start.sh
 
 ENV NODE_ENV=production
-
-CMD ["./start.sh"]

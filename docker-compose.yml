@@ -1,19 +1,30 @@
 services:
+  cgv-watch:
+    image: ghcr.io/sisu-01/cgv-watch:latest
+    restart: unless-stopped
+    command: ["./start.sh"]
+
+    environment:
+      SCREEN_YMD: ${SCREEN_YMD}
+      IS_DEV: ${IS_DEV:-false}
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./logs/${SCREEN_YMD}:/app/logs
+      - ./debug/${SCREEN_YMD}:/app/debug
   server:
     image: ghcr.io/sisu-01/cgv-watch:latest
     restart: unless-stopped
-    command: ["node", "server.js"]
-
-    environment:
-      TZ: Asia/Seoul
+    command: ["npm", "run", "ws:server"]
 
   publisher:
     image: ghcr.io/sisu-01/cgv-watch:latest
     restart: unless-stopped
-    command: ["node", "publisher.js"]
+    command: ["npm", "run", "ws:publisher"]
 
     environment:
-      TZ: Asia/Seoul
       SCREEN_YMD: ${SCREEN_YMD}
       IS_DEV: ${IS_DEV:-false}
 
@@ -27,12 +38,11 @@ services:
   subscriber:
     image: ghcr.io/sisu-01/cgv-watch:latest
     restart: unless-stopped
-    command: ["./start.sh"]
+    command: ["npm", "run", "ws:subscriber"]
 
     environment:
-      TZ: Asia/Seoul
-      SCREEN_YMD: ${SCREEN_YMD}
       IS_DEV: ${IS_DEV:-false}
+      CLIENT_NUMBER: ${CLIENT_NUMBER}
 
     env_file:
       - .env
@@ -40,3 +50,4 @@ services:
     volumes:
       - ./logs/${SCREEN_YMD}:/app/logs
       - ./debug/${SCREEN_YMD}:/app/debug
+  
