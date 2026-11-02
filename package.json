@@ -13,16 +13,19 @@
   "license": "ISC",
   "author": "",
   "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
     "test": "playwright test",
-    "chrome": "node chrome.js --dev",
-    "dev": "node index.js --dev",
-    "start": "node index.js",
-    "ws:server": "node server.js",
-    "ws:publisher": "node publisher.js",
-    "ws:subscriber": "node subscriber.js"
+    "chrome": "node src/entrypoints/open-chrome.js --dev",
+    "dev": "node src/entrypoints/cgv-watch-runner.js --dev",
+    "start": "node src/entrypoints/cgv-watch-runner.js",
+    "ws:server": "node src/entrypoints/server.js",
+    "ws:publisher": "node src/entrypoints/publisher.js",
+    "ws:subscriber": "node src/entrypoints/subscriber.js"
   },
   "dependencies": {
     "axios": "^1.18.1",

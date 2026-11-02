@@ -1,10 +1,10 @@
 
 import "dotenv/config";
 
-import { checking } from "./checking/checking.js";
-import { config as checkingConfig } from "./checking/config.js";
-import { createSocketClient } from "./socket/client.js";
-import logger from "./utils/logger.js";
+import { checking } from "#src/checking/checking.js";
+import { config as checkingConfig } from "#src/checking/config.js";
+import { createSocketClient } from "#src/socket/client.js";
+import logger from "#src/utils/logger.js";
 
 const isDev = process.argv.includes("--dev");
 let keepAliveTimer = null;

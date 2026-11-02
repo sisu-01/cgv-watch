@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-import { login } from "./login/login.js";
+import { login } from "#src/login/login.js";
 
 // isDev: 개발 할 때 미리 설정해놓은 쿠키 로그인 및 checking 무조건 걸림
 const isDev = process.argv.includes("--dev") || process.env.IS_DEV === "true";

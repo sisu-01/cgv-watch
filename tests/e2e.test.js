@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../login/login";
-import { checking } from "../checking/checking";
-import { booking } from "../booking/booking";
-import { getTomorrowYmd } from "../utils/utils";
+import { login } from "#src/login/login";
+import { checking } from "#src/checking/checking";
+import { booking } from "#src/booking/booking";
+import { getTomorrowYmd } from "#src/utils/utils";
 
 test("E2E", async ({ page }) => {
   const loginSuccess = await login(page);

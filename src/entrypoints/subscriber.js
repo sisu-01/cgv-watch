@@ -2,14 +2,14 @@
 import "dotenv/config";
 
 import { chromium } from "playwright";
-import { login } from "./login/login.js";
-import { getBookingConfig } from "./booking/config.js";
-import { booking } from "./booking/booking.js";
-import { payment } from "./payment/payment.js";
-import logger from "./utils/logger.js";
-import { send_message_and_save_log } from "./utils/utils.js";
-import { send_message } from "./telegram/telegram.js";
-import { createSocketClient } from "./socket/client.js";
+import { login } from "#src/login/login.js";
+import { getBookingConfig } from "#src/booking/config.js";
+import { booking } from "#src/booking/booking.js";
+import { payment } from "#src/payment/payment.js";
+import logger from "#src/utils/logger.js";
+import { send_message_and_save_log } from "#src/utils/utils.js";
+import { send_message } from "#src/telegram/telegram.js";
+import { createSocketClient } from "#src/socket/client.js";
 
 // isDev: 개발 할 때 미리 설정해놓은 쿠키 로그인 및 checking 무조건 걸림
 const VERSION = process.env.VERSION;
