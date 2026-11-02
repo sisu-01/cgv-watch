@@ -198,7 +198,7 @@ async function main() {
     process.exit(0);
   });
   
-  send_message_and_save_log(`${VERSION} ${ID}\nSubscriber 실행 중`);
+  send_message_and_save_log(`version:${VERSION}\ntotal:${CLIENT_TOTAL}\nnumber:${CLIENT_NUMBER+1}\nid:${ID}\nSubscriber 실행 중`);
   await client.waitUntilReady();
 }
 
