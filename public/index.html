@@ -187,6 +187,167 @@
     }
     #message.error { color: #ffad9b; }
 
+
+    .page-nav {
+      display: flex;
+      gap: 8px;
+      margin-top: 17px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #091511;
+    }
+    .nav-button {
+      flex: 1;
+      min-height: 40px;
+      padding: 9px 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .15s ease;
+    }
+    .nav-button:hover { color: var(--text); background: #11221c; }
+    .nav-button.active {
+      border-color: #285347;
+      background: #153128;
+      color: var(--accent);
+    }
+    .nav-button:focus-visible, .action-button:focus-visible,
+    .schedule-input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .page[hidden] { display: none !important; }
+    .schedule-panel {
+      margin-top: 20px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+    .schedule-form {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .field { min-width: 0; }
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .schedule-input {
+      width: 100%;
+      min-width: 0;
+      height: 44px;
+      padding: 0 11px;
+      border: 1px solid #294039;
+      border-radius: 9px;
+      background: #08120f;
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .input-suffix {
+      display: block;
+      margin-top: 6px;
+      color: #71847e;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+    .schedule-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    .action-button {
+      min-height: 40px;
+      padding: 9px 13px;
+      border: 1px solid #2a4941;
+      border-radius: 9px;
+      background: #14251f;
+      color: #cce9e1;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .action-button.primary {
+      border-color: #16866b;
+      background: #12392f;
+      color: #9af5dc;
+    }
+    .action-button:hover { filter: brightness(1.18); }
+    .schedule-rules {
+      margin: 13px 2px 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+    .schedule-result {
+      margin-top: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: #09120f;
+    }
+    .result-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+    .result-title { font-size: 14px; font-weight: 750; }
+    .result-count {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .schedule-table { width: 100%; border-collapse: collapse; }
+    .schedule-table th, .schedule-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #14231e;
+      text-align: left;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .schedule-table th {
+      color: #71847e;
+      font-size: 10px;
+      font-weight: 650;
+    }
+    .schedule-table td { color: #dce9e4; }
+    .schedule-table tr:last-child td { border-bottom: 0; }
+    .schedule-table td:first-child { width: 65px; color: var(--muted); }
+    .schedule-table td:last-child { color: var(--accent); font-weight: 750; }
+    .empty-result {
+      padding: 22px 15px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      text-align: center;
+    }
+    .schedule-error { color: #ffad9b; }
+    @media (max-width: 560px) {
+      .schedule-form { grid-template-columns: 1fr; gap: 13px; }
+      .schedule-panel { padding: 14px; }
+      .schedule-actions { flex-direction: column; }
+      .action-button { width: 100%; }
+      .schedule-table th, .schedule-table td { padding: 11px 12px; }
+    }
+
     @media (max-width: 520px) {
       body { padding: 25px 12px 36px; }
       h1 { font-size: 20px; }
@@ -199,10 +360,15 @@
 <body>
   <main>
     <header>
-      <h1>영화관 좌석 위치</h1>
-      <p class="description">선택한 좌석은 민트색으로 강조됩니다. 좌석을 눌러 선택하거나 해제할 수도 있습니다.</p>
+      <h1 id="page-title">영화관 좌석 위치</h1>
+      <p class="description" id="page-description">선택한 좌석은 민트색으로 강조됩니다. 좌석을 눌러 선택하거나 해제할 수도 있습니다.</p>
+      <nav class="page-nav" aria-label="페이지 이동">
+        <button type="button" class="nav-button active" id="nav-seats" aria-current="page">좌석 위치</button>
+        <button type="button" class="nav-button" id="nav-schedule">상영시간표 생성기</button>
+      </nav>
     </header>
 
+    <section id="seat-page" class="page">
     <section class="selection-panel" aria-live="polite">
       <div class="selection-info">
         <span class="selection-label">선택한 좌석 · <span id="selected-count">0석</span></span>
@@ -226,6 +392,43 @@
     </div>
 
     <p id="message">주소 뒤에 <strong>/H12,H13,J12,J3</strong>처럼 좌석 코드를 붙이면 해당 좌석이 표시됩니다.</p>
+    </section>
+
+    <section id="schedule-page" class="page" hidden>
+      <div class="schedule-panel">
+        <form id="schedule-form">
+          <div class="schedule-form">
+            <div class="field">
+              <label for="movie-duration">영화 상영 시간 (분)</label>
+              <input class="schedule-input" id="movie-duration" name="duration" type="number" min="1" max="1000" step="1" value="150" required>
+              <span class="input-suffix">광고 시간 10분은 자동으로 더합니다.</span>
+            </div>
+            <div class="field">
+              <label for="first-start">첫 회차 시작 시간</label>
+              <input class="schedule-input" id="first-start" name="start" type="text" inputmode="numeric" autocomplete="off" maxlength="5" pattern="(?:[0-9]|1[0-9]|2[0-8]):[0-5][0-9]" value="06:30" placeholder="06:30" required>
+              <span class="input-suffix">24시 이후도 입력 가능 (예: 25:30)</span>
+            </div>
+            <div class="field">
+              <label for="rest-minutes">회차 사이 휴게시간 (분)</label>
+              <input class="schedule-input" id="rest-minutes" name="rest" type="number" min="0" max="240" step="1" value="25" required>
+              <span class="input-suffix">이전 회차 종료 후 다음 회차까지</span>
+            </div>
+          </div>
+          <div class="schedule-actions">
+            <button type="button" id="schedule-copy-link" class="action-button">상영시간표 링크 복사</button>
+          </div>
+        </form>
+        <p class="schedule-rules">입력값을 변경하면 예상 시간표가 실시간으로 갱신됩니다. 계산 기준: 영화 상영 시간 + 광고 10분 = 한 회차 점유시간. 입력한 휴게시간을 더해 다음 회차를 배치합니다. <strong>상영 종료 시각이 30:00을 초과하는 회차는 표시하지 않습니다.</strong> 입력값은 URL에 저장되어 링크로 공유할 수 있습니다.</p>
+      </div>
+
+      <section class="schedule-result" aria-live="polite" aria-label="예상 상영시간표">
+        <div class="result-heading">
+          <span class="result-title">예상 상영시간표</span>
+          <span class="result-count" id="schedule-count">계산 중</span>
+        </div>
+        <div id="schedule-output"></div>
+      </section>
+    </section>
   </main>
 
   <script>
@@ -460,6 +663,171 @@
     } else if (initial.valid.length) {
       document.getElementById('message').textContent = '선택 좌석이 민트색으로 표시됩니다. 좌석을 눌러 변경할 수 있습니다.';
     }
+
+
+    // 페이지 전환과 상영시간표 생성기
+    const AD_MINUTES = 10;
+    const MAX_END_MINUTES = 30 * 60;
+    const DEFAULT_SCHEDULE = { duration: 150, start: '06:30', rest: 25 };
+
+    const scheduleElements = {
+      duration: document.getElementById('movie-duration'),
+      start: document.getElementById('first-start'),
+      rest: document.getElementById('rest-minutes'),
+      count: document.getElementById('schedule-count'),
+      output: document.getElementById('schedule-output'),
+      form: document.getElementById('schedule-form')
+    };
+
+    function parseStartMinutes(value) {
+      const match = String(value).trim().match(/^(\d{1,2}):(\d{2})$/);
+      if (!match) return null;
+      const hours = Number(match[1]);
+      const minutes = Number(match[2]);
+      if (hours > 28 || minutes > 59) return null;
+      return hours * 60 + minutes;
+    }
+
+    function formatClock(totalMinutes) {
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    }
+
+    function readScheduleFromUrl() {
+      const params = new URLSearchParams(location.search);
+      const duration = Number(params.get('duration'));
+      const rest = Number(params.get('rest'));
+      const start = params.get('start');
+
+      scheduleElements.duration.value = Number.isInteger(duration) && duration >= 1 && duration <= 1000
+        ? duration : DEFAULT_SCHEDULE.duration;
+      scheduleElements.start.value = parseStartMinutes(start) !== null
+        ? start : DEFAULT_SCHEDULE.start;
+      scheduleElements.rest.value = Number.isInteger(rest) && rest >= 0 && rest <= 240
+        ? rest : DEFAULT_SCHEDULE.rest;
+    }
+
+    function syncScheduleUrl() {
+      const url = new URL(location.href);
+      url.searchParams.set('page', 'schedule');
+      url.searchParams.set('duration', scheduleElements.duration.value);
+      url.searchParams.set('start', scheduleElements.start.value.trim());
+      url.searchParams.set('rest', scheduleElements.rest.value);
+      history.replaceState(null, '', url);
+    }
+
+    function renderSchedule(updateUrl = false) {
+      const duration = Number(scheduleElements.duration.value);
+      const rest = Number(scheduleElements.rest.value);
+      const startValue = scheduleElements.start.value.trim();
+      const firstStart = parseStartMinutes(startValue);
+
+      let error = '';
+      if (!Number.isInteger(duration) || duration < 1 || duration > 1000) {
+        error = '영화 상영 시간은 1~1,000분 사이의 정수로 입력해 주세요.';
+      } else if (firstStart === null) {
+        error = '첫 회차 시작 시간은 06:30 형식으로 입력해 주세요. (00:00~29:59)';
+      } else if (!Number.isInteger(rest) || rest < 0 || rest > 240) {
+        error = '휴게시간은 0~240분 사이의 정수로 입력해 주세요.';
+      }
+
+      if (error) {
+        scheduleElements.count.textContent = '입력값 확인';
+        scheduleElements.output.innerHTML = `<div class="empty-result schedule-error">${error}</div>`;
+        return false;
+      }
+
+      const occupiedMinutes = duration + AD_MINUTES;
+      const sessions = [];
+      let start = firstStart;
+      while (start + occupiedMinutes <= MAX_END_MINUTES && sessions.length < 100) {
+        const end = start + occupiedMinutes;
+        sessions.push({ start, end });
+        start = end + rest;
+      }
+
+      scheduleElements.count.textContent = `${sessions.length}회차`;
+      if (sessions.length === 0) {
+        scheduleElements.output.innerHTML = '<div class="empty-result">첫 회차의 상영 종료 시각이 30:00을 초과하여 표시할 수 있는 회차가 없습니다.</div>';
+      } else {
+        const rows = sessions.map((session, index) => `
+          <tr>
+            <td>${index + 1}회차</td>
+            <td>${formatClock(session.start)}</td>
+            <td>${formatClock(session.end)}</td>
+          </tr>`).join('');
+        scheduleElements.output.innerHTML = `
+          <table class="schedule-table">
+            <thead><tr><th>회차</th><th>시작</th><th>종료</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      }
+
+      if (updateUrl) syncScheduleUrl();
+      return true;
+    }
+
+    function showPage(page, updateUrl = true) {
+      const isSchedule = page === 'schedule';
+      document.getElementById('seat-page').hidden = isSchedule;
+      document.getElementById('schedule-page').hidden = !isSchedule;
+      document.getElementById('nav-seats').classList.toggle('active', !isSchedule);
+      document.getElementById('nav-schedule').classList.toggle('active', isSchedule);
+      if (isSchedule) {
+        document.getElementById('nav-schedule').setAttribute('aria-current', 'page');
+        document.getElementById('nav-seats').removeAttribute('aria-current');
+      } else {
+        document.getElementById('nav-seats').setAttribute('aria-current', 'page');
+        document.getElementById('nav-schedule').removeAttribute('aria-current');
+      }
+      document.getElementById('page-title').textContent = isSchedule ? '상영시간표 생성기' : '영화관 좌석 위치';
+      document.title = isSchedule ? '상영시간표 생성기' : '영화관 좌석 위치';
+      document.getElementById('page-description').textContent = isSchedule
+        ? '입력값을 변경하면 예상 상영시간표가 실시간으로 갱신됩니다.'
+        : '선택한 좌석은 민트색으로 강조됩니다. 좌석을 눌러 선택하거나 해제할 수도 있습니다.';
+
+      if (updateUrl) {
+        const url = new URL(location.href);
+        url.searchParams.set('page', isSchedule ? 'schedule' : 'seats');
+        history.replaceState(null, '', url);
+      }
+      if (isSchedule) renderSchedule(true);
+    }
+
+    document.getElementById('nav-seats').addEventListener('click', () => showPage('seats'));
+    document.getElementById('nav-schedule').addEventListener('click', () => showPage('schedule'));
+
+    // 입력값이 바뀌는 즉시 시간표와 공유 URL을 갱신합니다.
+    [scheduleElements.duration, scheduleElements.start, scheduleElements.rest].forEach(input => {
+      input.addEventListener('input', () => renderSchedule(true));
+    });
+
+    // 입력창에서 Enter를 눌러도 페이지가 새로고침되지 않도록 처리합니다.
+    scheduleElements.form.addEventListener('submit', event => {
+      event.preventDefault();
+      renderSchedule(true);
+    });
+
+    document.getElementById('schedule-copy-link').addEventListener('click', async () => {
+      const valid = renderSchedule(true);
+      if (!valid) return;
+      const button = document.getElementById('schedule-copy-link');
+      try {
+        await navigator.clipboard.writeText(location.href);
+        button.textContent = '복사 완료!';
+      } catch {
+        scheduleElements.count.textContent += ' · 주소창 링크를 복사하세요';
+      }
+      setTimeout(() => { button.textContent = '상영시간표 링크 복사'; }, 1600);
+    });
+
+    readScheduleFromUrl();
+    const initialPage = new URLSearchParams(location.search).get('page') === 'schedule'
+      ? 'schedule' : 'seats';
+    showPage(initialPage, false);
+    if (initialPage === 'schedule') syncScheduleUrl();
+
   </script>
 </body>
 </html>
