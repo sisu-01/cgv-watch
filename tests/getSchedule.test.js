@@ -11,7 +11,7 @@ const checking_config = {
   CO_CD: "A420",
   SITE_NUMBER: "0013",
   RELEASE_CONTROL_SCOPE_CODE: "08",
-  SCREEN_YMD: "20240228",
+  SCREEN_YMD: "20261126",
 };
 const {
   CGV_URL,
@@ -29,6 +29,9 @@ const params = new URLSearchParams({
 const BASE_URL = `${CGV_URL}?${params}`;
 const data = await fetchCgvSchedule(BASE_URL);
 console.log(typeof(data));
-data.data.filter(e => e.scnsNo === '018').forEach(e => {
-  console.log(`${e.scnSseq} ${e.scnsrtTm}-${e.scnendTm}`);
+data.data
+.filter(e => e.scnsNo === '018')
+.forEach(e => {
+  console.log(e);
+  // console.log(`${e.scnSseq} ${e.scnsrtTm}-${e.scnendTm} ${e.prodNo} ${e.prodNm} ${e.expoScnsNm}`);
 });
