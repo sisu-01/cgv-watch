@@ -45,8 +45,8 @@ export async function login(page, id, pw) {
         await send_message("캡챠 실패");
         continue;
       } else {
-        await send_message("로그인 성공");
-        logger.info("로그인 성공");
+        await send_message(`${id} 로그인 성공`);
+        logger.info(`${id} 로그인 성공`);
         return true;
       }
     }
