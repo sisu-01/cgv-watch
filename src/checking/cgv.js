@@ -60,7 +60,7 @@ export async function fetchCgvSchedule(url) {
     if (!errorNotified) {
       errorNotified = true;
       errorStartedAt = now;
-      await sendErrorNotification(error, response);
+      // await sendErrorNotification(error, response);
     } else if ( now - errorStartedAt >= ERROR_REMINDER_INTERVAL ) {
       await sendErrorNotification(error, response);
     }
