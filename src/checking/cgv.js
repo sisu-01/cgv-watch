@@ -36,20 +36,57 @@ export async function fetchCgvSchedule(url) {
 
   } catch (error) {
     const response = error.response;
+    const cause = error.cause;
+    const request = error.request;
+    const socket = request?.socket;
 
     logger.error(
       JSON.stringify({
+        // 기본 오류 정보
+        name: error.name,
         message: error.message,
+        code: error.code,
+        errno: error.errno,
+        syscall: error.syscall,
+        stack: error.stack,
+
+        // 실제 원인이 되는 하위 오류
+        cause: cause ? {
+          name: cause.name,
+          message: cause.message,
+          code: cause.code,
+          errno: cause.errno,
+          syscall: cause.syscall
+        } : null,
+
+        // HTTP 응답
         status: response?.status,
         statusText: response?.statusText,
+        responseData: response?.data,
+
+        // 요청 상태
+        hasRequest: !!request,
+        requestAborted: request?.aborted,
+        requestDestroyed: request?.destroyed,
+        reusedSocket: request?.reusedSocket,
+
+        // TCP/TLS 소켓 상태
+        socket: socket ? {
+          connecting: socket.connecting,
+          destroyed: socket.destroyed,
+          remoteAddress: socket.remoteAddress,
+          remotePort: socket.remotePort,
+          bytesRead: socket.bytesRead,
+          bytesWritten: socket.bytesWritten,
+          authorized: socket.authorized,
+          authorizationError: socket.authorizationError
+        } : null,
+
+        // 요청 정보
         url: error.config?.url,
         method: error.config?.method,
-        responseHeaders: response?.headers,
-        responseData:
-          typeof response?.data === "string"
-            ? response.data.slice(0, 3000)
-            : response?.data,
         requestHeaders: error.config?.headers,
+
         elapsedMs: Date.now() - startedAt
       })
     );
